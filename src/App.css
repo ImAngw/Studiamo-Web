@@ -1,0 +1,62 @@
+
+/* title-font URL*/
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+
+
+.main-font{
+    font-family: "Amatic SC", sans-serif;
+    font-weight: 400;
+    font-size: 25px;
+    font-style: normal;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.title-font {
+    font-family: "Amatic SC", sans-serif;
+    font-weight: 700;
+    font-size: 45px;
+    font-style: normal;
+    color: blue;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.custom-navbar {
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.dashboard-navbar {
+    background-color: rgba(255, 255, 0, 1);
+}
+
+
+.home-style {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.tutor-style {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.join-us-style {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+
+.footer-style {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+
+
+ul {
+    list-style: none;         /* tolgo i puntini originali */
+    padding-left: 1em;        /* aggiungo un po' di spazio a sinistra */
+}
+
+ul li::before {
+    content: "◦";             /* il nuovo punto */
+    color: darkblue;               /* colore del punto */
+    margin-right: 0.5em;      /* spazio tra punto e testo */
+}
