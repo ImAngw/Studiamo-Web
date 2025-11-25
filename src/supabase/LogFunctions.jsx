@@ -2,15 +2,17 @@ import {supabase} from "./supabaseClient";
 
 
 export async function logout(navigate) {
-    const { error } = await supabase.auth.signOut()
+    const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') {
+            listener.subscription.unsubscribe()
+            navigate('/tutor_page')
+        }
+    })
 
+    const { error } = await supabase.auth.signOut()
     if (error) {
         alert(error.message)
-        console.error('Errore logout:', error)
-        return false
-    } else {
-        navigate('/tutor_page')
-        return true
+        console.error(error)
     }
 }
 

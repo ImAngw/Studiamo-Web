@@ -8,10 +8,7 @@ import {supabase} from "../supabase/supabaseClient";
 async function checkAuth(navigate) {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        // Utente non loggato → reindirizza al login
         console.log('No Log');
-
-
     } else {
         maintainLogin(session.user, navigate)
     }
@@ -36,7 +33,6 @@ function LoginPage() {
         setError('')
 
         await login({username, password}, navigate, setError, setLoading)
-
     }
 
     useEffect(() => {
