@@ -19,7 +19,7 @@ function TutorDashboard() {
             setStudents(studs);
         }
         fetchStuds();
-    })
+    }, [])
 
 
 
