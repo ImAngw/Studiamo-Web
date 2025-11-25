@@ -183,12 +183,13 @@ export async function getTutorBySurname(surname) {
 }
 
 
-export async function updateStudent(student_id, student_name, student_surname, student_date) {
+export async function updateStudent(student_id, student_name, student_surname, student_date, student_phone) {
     const { error } = await supabase.rpc('update_student', {
         student_id: student_id,
         student_name: student_name,
         student_surname: student_surname,
-        student_date: student_date
+        student_date: student_date,
+        student_phone: student_phone
     })
     if (error) {
         alert(error.message)

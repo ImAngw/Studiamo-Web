@@ -52,11 +52,11 @@ function AdminTutorPage() {
 
 
     const [studOffset, setStudOffset] = useState(0);
-    const [totalStudPages, setTotalStudPages] = useState(0);
+    const [totalStudPages, setTotalStudPages] = useState(1);
     const studPerPage = 20;
 
     const [tutorOffset, setTutorOffset] = useState(0);
-    const [totalTutorPages, setTotalTutorPages] = useState(0);
+    const [totalTutorPages, setTotalTutorPages] = useState(1);
     const tutorPerPage = 20;
 
     const [activeTutors, setActiveTutors] = useState([])

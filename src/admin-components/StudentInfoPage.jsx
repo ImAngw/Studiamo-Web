@@ -3,6 +3,7 @@ import {ButtonWithIcon} from "../components/CustomButtons";
 import closeIcon from "../assets/icons/close.png";
 import confirmIcon from "../assets/icons/confirm.png";
 import removeIcon from "../assets/icons/remove-user.png";
+import searchIcon from "../assets/icons/search.png";
 import { useTranslation } from 'react-i18next';
 import {getTutorBySurname, getTutorsOfStudent, updateStudent, addTutorStudentRelation, removeTutorStudentRelation} from "../supabase/DBAdminFunctions";
 
@@ -214,7 +215,7 @@ function StudentInfoPage({setIsOpen, student}) {
                         margin: '0 auto',
                     }}>
                         <img
-                            src={"src/assets/icons/search.png"}
+                            src={searchIcon}
                             alt="search"
                             style={{ width: '18px', height: '18px', marginRight: '6px', opacity: 0.6 }}
                         />
@@ -299,7 +300,7 @@ function StudentInfoPage({setIsOpen, student}) {
                             if (formData.name === "" || formData.surname === "" || formData.date === "" || formData.phone === "") {
                                 alert(t(strings.alert_msg));
                             } else{
-                                await updateStudent(student.stud_id, formData.name, formData.surname, formData.date, formData.phone, tutorsToAdd);
+                                await updateStudent(student.stud_id, formData.name, formData.surname, formData.date, formData.phone);
                                 for (let t of tutorsToAdd) {
                                     await addTutorStudentRelation(student.stud_id, t.tutor_id)
                                 }
