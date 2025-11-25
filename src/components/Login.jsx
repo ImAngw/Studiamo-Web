@@ -5,14 +5,7 @@ import {login, maintainLogin} from "../supabase/LogFunctions";
 import {supabase} from "../supabase/supabaseClient";
 
 
-async function checkAuth(navigate) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        console.log('No Log');
-    } else {
-        maintainLogin(session.user, navigate)
-    }
-}
+
 
 
 
@@ -36,7 +29,16 @@ function LoginPage() {
     }
 
     useEffect(() => {
-        checkAuth(navigate);
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                console.log('No Log');
+            } else {
+                await maintainLogin(session.user, navigate)
+            }
+        }
+
+        checkAuth();
     }, []);
 
 

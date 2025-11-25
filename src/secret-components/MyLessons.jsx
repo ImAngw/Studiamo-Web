@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import SecretDropDown from "./SecretDropDown";
-import {getLessons, deleteLesson, getLessonsCount, GetFollowedStudents} from "../supabase/DBFunctions";
+import {getLessons, deleteLesson} from "../supabase/DBFunctions";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import delIcon from '../assets/icons/delete.png'
 import plusIcon from '../assets/icons/plus.png'
