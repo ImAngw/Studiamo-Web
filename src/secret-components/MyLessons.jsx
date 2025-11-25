@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import SecretDropDown from "./SecretDropDown";
-import {GetLessons, deleteLesson} from "../supabase/DBFunctions";
+import {getLessons, deleteLesson, getLessonsCount, GetFollowedStudents} from "../supabase/DBFunctions";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import delIcon from '../assets/icons/delete.png'
 import plusIcon from '../assets/icons/plus.png'
@@ -91,15 +91,14 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
     lastData = formatDate(lastData.getFullYear(), lastData.getMonth() + 1, lastData.getDate());
 
 
-    const lessons = GetLessons({
-        first_date: firstData,
-        last_date: lastData
-    })
-
-
     useEffect(() => {
-        setAllLessons(lessons);
-    }, [lessons])
+        async function fetchLessons() {
+            const lessons = await getLessons(firstData, lastData)
+            setAllLessons(lessons)
+        }
+        fetchLessons();
+    }, [firstData, lastData])
+
 
 
     const counts = makeCounts(allLessons)

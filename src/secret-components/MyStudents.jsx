@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 
 
-function MyStudents( { studentsList }) {
+function MyStudents( { studentsList}) {
     const { t } = useTranslation();
     const strings = t("MyStudents", { returnObjects: true });
 

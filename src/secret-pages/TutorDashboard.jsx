@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import SecretHeader from "../secret-components/SecretHeader";
 import MyStudents from "../secret-components/MyStudents";
 import MyLessons from "../secret-components/MyLessons";
@@ -8,9 +8,20 @@ import {GetTutorProfile, GetFollowedStudents, GetLessonsTypes, GetLessonsFormats
 
 function TutorDashboard() {
     const profile = GetTutorProfile()
-    const students = GetFollowedStudents()
+    const [students, setStudents] = useState([])
     const lessonsTypes = GetLessonsTypes()
     const lessonFormats = GetLessonsFormats()
+
+
+    useEffect(() => {
+        async function fetchStuds() {
+            const studs = await GetFollowedStudents();
+            setStudents(studs);
+        }
+        fetchStuds();
+    })
+
+
 
     return (
         <div>
@@ -21,8 +32,12 @@ function TutorDashboard() {
                         surname={profile.tutor_surname}
                     />
 
-                    <MyStudents studentsList={students} />
-                    <MyLessons studentsList={students} lessonTypes={lessonsTypes} lessonFormats={lessonFormats}/>
+                    <MyStudents studentsList={students}/>
+                    <MyLessons
+                        studentsList={students}
+                        lessonTypes={lessonsTypes}
+                        lessonFormats={lessonFormats}
+                    />
                 </div>
 
             )}

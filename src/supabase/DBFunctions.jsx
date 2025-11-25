@@ -25,27 +25,27 @@ export function GetTutorProfile() {
 }
 
 
-export function GetFollowedStudents() {
+export async function GetFollowedStudents() {
+    const { data, error } = await supabase.rpc('get_followed_students')
 
-    const [students, setStudents] = useState(null)
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
 
-    useEffect(() => {
-        const fetchStudents = async () => {
-            const { data, error } = await supabase.rpc('get_followed_students')
-            if (error) {
-                alert(error.message)
-            } else {
-                setStudents(data.slice(0, data.length))
-            }
-        }
-        fetchStudents()
-
-    }, [])
-
-    if (!students) return null
-
-    return students
 }
+
+
+export async function getStudentsCount() {
+    const { data, error } = await supabase.rpc('get_followed_students_count')
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
 
 
 export function GetLessonsTypes() {
@@ -92,28 +92,30 @@ export function GetLessonsFormats() {
 
 
 
-export function GetLessons({first_date, last_date}) {
+export async function getLessonsCount(start_date, stop_date) {
+    const { data, error } = await supabase.rpc('get_lessons_count_in_range', {
+        start_date: start_date,
+        stop_date: stop_date
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
 
-    const [lessons, setLessons] = useState(null)
+export async function getLessons(first_date, last_date) {
 
-    useEffect(() => {
-        const fetchLessons = async () => {
-            const { data, error } = await supabase.rpc('get_lessons_in_range', {
-                start_date: first_date,
-                stop_date: last_date
-            })
-            if (error) {
-                alert(error.message)
-            } else {
-                setLessons(data.slice(0, data.length))
-            }
-        }
-        fetchLessons()
-    }, [first_date, last_date])
+    const { data, error } = await supabase.rpc('get_lessons_in_range', {
+        start_date: first_date,
+        stop_date: last_date
+    })
 
-    if (!lessons) return null
-
-    return lessons
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
 }
 
 

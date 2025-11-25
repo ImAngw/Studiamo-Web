@@ -36,7 +36,7 @@ function NewStudentSlot({idx, students, setAvailableStudents, availableStudents,
                     border: '1px solid black',     // bordo verde (o quello che vuoi)
                     color: 'black',                // testo verde per coerenza
                     boxShadow: 'none',                // rimuove l’ombra del focus
-                    width:'180px',
+                    width:'300px',
                     fontSize: '10px',
                 }}>
                     <p style={{ display: 'inline', margin: 0, paddingRight: selectedStudent ? 20:0 }}>{selectedStudent}</p>
@@ -90,6 +90,7 @@ function NewStudentSlot({idx, students, setAvailableStudents, availableStudents,
                     ))}
                 </Dropdown.Menu>
             </Dropdown>
+            {/*
             <p style={{ display: 'inline', margin: 0, alignContent:'center', paddingLeft:20}} className={'main-font'}><b>€:</b></p>
             <input
                 type="number"
@@ -98,6 +99,8 @@ function NewStudentSlot({idx, students, setAvailableStudents, availableStudents,
                 placeholder="€€€€"
                 style={{ width: '50px', border: '1px solid black', borderRadius: '8px', padding: '5px', fontSize: '10px'}}
             />
+            */}
+
         </div>
     );
 }
