@@ -15,6 +15,22 @@ export async function logout(navigate) {
 }
 
 
+export async function maintainLogin(user, navigate) {
+    const { data: userInfo, error: userError } = await supabase
+        .from('users')
+        .select('role')
+        .eq('uid', user.id)
+        .single()
+
+    if (userInfo.role === 4) {
+        navigate('/admin_tutor_page', { state: { user } })
+    } else {
+        navigate('/tutor_dashboard', { state: { user } })
+    }
+
+}
+
+
 export async function login({ username, password }, navigate, setError, setLoading) {
     setLoading(true)
     setError('')

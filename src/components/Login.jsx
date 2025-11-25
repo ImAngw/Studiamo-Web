@@ -1,7 +1,22 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
-import {login} from "../supabase/LogFunctions";
+import {login, maintainLogin} from "../supabase/LogFunctions";
+import {supabase} from "../supabase/supabaseClient";
+
+
+async function checkAuth(navigate) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        // Utente non loggato → reindirizza al login
+        console.log('No Log');
+
+
+    } else {
+        maintainLogin(session.user, navigate)
+    }
+}
+
 
 
 function LoginPage() {
@@ -23,6 +38,11 @@ function LoginPage() {
         await login({username, password}, navigate, setError, setLoading)
 
     }
+
+    useEffect(() => {
+        checkAuth(navigate);
+    }, []);
+
 
     return (
         <div className="d-flex justify-content-center align-items-center" style={{paddingBottom:70, paddingTop:30}}>
