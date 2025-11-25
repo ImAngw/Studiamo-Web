@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {ButtonWithIcon} from "../components/CustomButtons";
 import settingsIcon from "../assets/icons/settings.png";
 import addUserIcon from "../assets/icons/add-user.png";
+import searchIcon from "../assets/icons/search.png";
 import {getAllStudInDB, getStudentsCount, getStudBySurname} from "../supabase/DBAdminFunctions";
 import StudentInfoPage from "./StudentInfoPage";
 import AddNewStudent from "./AddNewStudent";
@@ -111,8 +112,9 @@ function AllStudentsTable() {
                     width: '300px',
                     backgroundColor: '#fff'
                 }}>
+
                     <img
-                        src={"src/assets/icons/search.png"}
+                        src={searchIcon}
                         alt="search"
                         style={{ width: '18px', height: '18px', marginRight: '6px', opacity: 0.6 }}
                     />

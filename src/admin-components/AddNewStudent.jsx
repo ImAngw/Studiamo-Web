@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import closeIcon from "../assets/icons/close.png";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import addUser from "../assets/icons/add-button.png";
+import searchIcon from "../assets/icons/search.png";
 import removeIcon from "../assets/icons/remove-user.png";
 import {getTutorBySurname, addNewStudent, addTutorStudentRelation} from "../supabase/DBAdminFunctions";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -205,7 +206,7 @@ function AddNewStudent({setIsOpen}) {
                         margin: '0 auto',
                     }}>
                         <img
-                            src={"src/assets/icons/search.png"}
+                            src={searchIcon}
                             alt="search"
                             style={{ width: '18px', height: '18px', marginRight: '6px', opacity: 0.6 }}
                         />

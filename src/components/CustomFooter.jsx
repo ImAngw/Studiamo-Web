@@ -59,6 +59,31 @@ function CustomFooter() {
                         <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '20px'}}>{strings.phone}</p>
                     </div>
 
+                    <h2 style={{paddingBottom: '5px', fontSize: '35px', position: 'relative'}} className={"title-font"}>
+                        {strings.social}
+                    </h2>
+
+                    <div style={{display: 'flex', alignItems: 'center', alignContent: 'center', paddingLeft: '15px', paddingBottom: '25px', position: 'relative'}}>
+
+                        <a href="https://www.instagram.com/studi_amo_/" target="_blank"
+                           rel="noopener noreferrer">
+                            <img
+                                style={{height: '26px', width: '35px', paddingRight: '10px', cursor: 'pointer'}}
+                                src={instaIcon}
+                                alt="Instagram"
+                            />
+                        </a>
+
+                        <a href="https://wa.me/3892494117" target="_blank"
+                           rel="noopener noreferrer">
+                            <img
+                                style={{height: '28px', width: '40px', paddingRight: '10px', cursor: 'pointer'}}
+                                src={whatsappIcon}
+                                alt="Instagram"
+                            />
+                        </a>
+                    </div>
+
                     <div>
                         <button
                             onClick={handleOpen}
@@ -120,33 +145,6 @@ function CustomFooter() {
                         </Modal>
                     </div>
 
-                    <h2 style={{paddingBottom: '5px', fontSize: '35px', position: 'relative'}} className={"title-font"}>
-                        {strings.social}
-                    </h2>
-
-                    <div style={{display: 'flex', alignItems: 'center', alignContent: 'center', paddingLeft: '15px', paddingBottom: '25px', position: 'relative'}}>
-
-                        <a href="https://www.instagram.com/studi_amo_/" target="_blank"
-                           rel="noopener noreferrer">
-                            <img
-                                style={{height: '26px', width: '35px', paddingRight: '10px', cursor: 'pointer'}}
-                                src={instaIcon}
-                                alt="Instagram"
-                            />
-                        </a>
-
-                        <a href="https://wa.me/3892494117" target="_blank"
-                           rel="noopener noreferrer">
-                            <img
-                                style={{height: '28px', width: '40px', paddingRight: '10px', cursor: 'pointer'}}
-                                src={whatsappIcon}
-                                alt="Instagram"
-                            />
-                        </a>
-
-
-
-                    </div>
                     <div style={{position: 'relative', textAlign: 'center', fontSize: '11px'}}>
                         <p>{strings.powered_by}</p>
                     </div>
