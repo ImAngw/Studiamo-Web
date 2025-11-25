@@ -148,7 +148,7 @@ function CustomFooter() {
 
                     </div>
                     <div style={{position: 'relative', textAlign: 'center', fontSize: '11px'}}>
-                        <p>Powered by Angileddu</p>
+                        <p>{strings.powered_by}</p>
                     </div>
                 </div>
             </footer>

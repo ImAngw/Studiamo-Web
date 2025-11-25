@@ -3,31 +3,6 @@ import {supabase} from "./supabaseClient";
 
 
 
-export function GetGeneralCounts({first_date, last_date}) {
-
-    const [counts, setCounts] = useState(null)
-
-    useEffect(() => {
-        const fetchCounts = async () => {
-            const { data, error } = await supabase.rpc('make_general_counts', {
-                first_date: first_date,
-                last_date: last_date
-            })
-            if (error) {
-                alert(error.message)
-            } else {
-                setCounts(data[0])
-            }
-        }
-        fetchCounts()
-    }, [first_date, last_date])
-
-    if (!counts) return null
-
-    return counts
-}
-
-
 export async function getGeneralCounts(first_date, last_date) {
     const { data, error } = await supabase.rpc('make_general_counts', {
         first_date: first_date,

@@ -20,7 +20,7 @@ async function getBase64ImageFromUrl(url) {
 pdfMake.vfs = pdfFonts.vfs;
 
 export async function generateStudentReport(user, firstDate, lastDate, lessons) {
-    const logoDataUrl = await getBase64ImageFromUrl('/icons/logo.jpg');
+    const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
     const [f_year, f_month, f_day] = firstDate.split("-");
     const f_formatted = `${f_day}-${f_month}-${f_year}`;
 
@@ -37,11 +37,19 @@ export async function generateStudentReport(user, firstDate, lastDate, lessons) 
             { text: 'Durata', bold: true, alignment: 'center' }
         ],
         // Righe dinamiche
-        ...lessons.map(lesson => [
-            { text: lesson.lesson_date, alignment: 'center', margin: [0, 5, 0, 5] },
-            { text: lesson.tutor_surname + " " + lesson.tutor_name, alignment: 'center', margin: [0, 5, 0, 5] },
-            { text: lesson.lesson_hours + "h " + lesson.lesson_minutes + "min", alignment: 'center', margin: [0, 5, 0, 5] }
-        ])
+        ...lessons.map(lesson => {
+            const date = new Date(lesson.lesson_date);
+            const formattedDate = new Intl.DateTimeFormat('it-IT').format(date); // gg/mm/aaaa
+
+            // se vuoi usare il "-" invece di "/", basta sostituire:
+            const dateStr = formattedDate.replace(/\//g, '-');
+
+            return [
+                { text: dateStr, alignment: 'center', margin: [0, 5, 0, 5] },
+                { text: lesson.tutor_surname + " " + lesson.tutor_name, alignment: 'center', margin: [0, 5, 0, 5] },
+                { text: lesson.lesson_hours + "h " + lesson.lesson_minutes + "min", alignment: 'center', margin: [0, 5, 0, 5] }
+            ];
+        })
     ];
 
     const docDefinition = {
@@ -87,9 +95,8 @@ export async function generateStudentReport(user, firstDate, lastDate, lessons) 
     return pdfMake.createPdf(docDefinition);
 }
 
-
 export async function generateTutorReport(tutor_name, tutor_surname, gain, lessons, students, firstDate, lastDate) {
-    const logoDataUrl = await getBase64ImageFromUrl('/icons/logo.jpg');
+    const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
     const [f_year, f_month, f_day] = firstDate.split("-");
     const f_formatted = `${f_day}-${f_month}-${f_year}`;
 
@@ -146,10 +153,8 @@ export async function generateTutorReport(tutor_name, tutor_surname, gain, lesso
     return pdfMake.createPdf(docDefinition);
 }
 
-
-
 export async function generateAllStudentReport(users, firstDate, lastDate) {
-    const logoDataUrl = await getBase64ImageFromUrl('/icons/logo.jpg');
+    const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
     const [f_year, f_month, f_day] = firstDate.split("-");
     const f_formatted = `${f_day}-${f_month}-${f_year}`;
 
@@ -207,10 +212,8 @@ export async function generateAllStudentReport(users, firstDate, lastDate) {
     return pdfMake.createPdf(docDefinition);
 }
 
-
-
 export async function generateAllTutorReport(users, firstDate, lastDate) {
-    const logoDataUrl = await getBase64ImageFromUrl('/icons/logo.jpg');
+    const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
     const [f_year, f_month, f_day] = firstDate.split("-");
     const f_formatted = `${f_day}-${f_month}-${f_year}`;
 

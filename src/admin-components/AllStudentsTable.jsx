@@ -30,7 +30,7 @@ function AllStudentsTable() {
     const [myOffset, setMyOffset] = useState(0);
 
 
-    const studentsPerPage = 50;
+    const studentsPerPage = 20;
     const totalPages = Math.ceil(studentCount / studentsPerPage);
 
     const handleChange = (event) => {

@@ -59,6 +59,10 @@ function AdminTutorPage() {
     const [totalTutorPages, setTotalTutorPages] = useState(0);
     const tutorPerPage = 20;
 
+    const [activeTutors, setActiveTutors] = useState([])
+    const [activeStudents, setActiveStudents] = useState([])
+    const [generalCounts, setGeneralCounts] = useState({})
+
     useEffect(() => {
         if (isFirstRun) return
         const fetchActiveStudents = async () => {
@@ -66,13 +70,18 @@ function AdminTutorPage() {
             setActiveStudents(students);
         }
         fetchActiveStudents()
+    }, [pushButton, studOffset])
 
+
+    useEffect(() => {
+        if (isFirstRun) return
         const fetchActiveTutors = async () => {
             const tutors = await getActiveTutors(false, firstDataStr, lastDataStr, tutorOffset * tutorPerPage);
             setActiveTutors(tutors);
         }
         fetchActiveTutors()
-    }, [pushButton])
+    }, [pushButton, tutorOffset])
+
 
 
 
@@ -98,9 +107,7 @@ function AdminTutorPage() {
         lastDataStr = formatDate(currentYear, currentMonth, selectedLastDay)
     }, [selectedLastDay, selectedFirstDay])
 
-    const [activeTutors, setActiveTutors] = useState([])
-    const [activeStudents, setActiveStudents] = useState([])
-    const [generalCounts, setGeneralCounts] = useState({})
+
 
     return (
         <div>

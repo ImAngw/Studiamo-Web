@@ -74,7 +74,7 @@ function CustomOffCanvas() {
                 </Offcanvas.Body>
 
                 <div  style={{textAlign:'center', fontSize: '10px'}}>
-                    <p>Powered by Angileddu</p>
+                    <p>{strings.powered_by}</p>
                 </div>
             </Offcanvas>
         </div>
