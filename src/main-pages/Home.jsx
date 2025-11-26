@@ -36,7 +36,7 @@ function Home() {
     return (
         <div className={'home-style'} style={{ overflowX: 'hidden' }}>
             <Header img={img}/>
-            <div style={{paddingRight:15, paddingLeft:15}}>
+            <div style={{paddingRight:15, paddingLeft:15, paddingTop:50}}>
                 <h1 className={'title-font'}>{strings.title1}</h1>
                 <p className={'main-font'}>{strings.par1_1}</p>
                 <p className={'main-font'}>{strings.par1_2}</p>
@@ -64,12 +64,12 @@ function Home() {
                         justifyContent: "center"
                     }}>
                         <Carousel
-                            style={{maxWidth: '350px', maxHeight:'800px'}}>
+                            style={{width: '370px', maxHeight:'500px'}}>
                             {slides.map((slide, index) => (
                                 <Carousel.Item key={index}>
                                     <Image style={{
                                         width: '100%',
-                                        height: '650px',
+                                        height: '500px',
                                     }} src={slide.url} fluid className='rounded-0'/>
                                 </Carousel.Item>
                             ))}
@@ -80,7 +80,7 @@ function Home() {
                         <p className={'main-font'}>{strings.par2_2}</p>
                         <ul
                             className={'main-font'}
-                            style={{paddingTop: '10px', paddingLeft: '20px',}}
+                            style={{paddingTop: '5px', paddingLeft: '20px', paddingBottom: '20px'}}
                         >
                             <li>{strings.priv_les}</li>
                             <li>{strings.school_help}</li>
@@ -94,7 +94,7 @@ function Home() {
 
                         <ul
                             className={'main-font'}
-                            style={{paddingTop: '10px', paddingLeft: '20px',}}
+                            style={{paddingTop: '5px', paddingLeft: '20px',}}
                         >
                             <li>{strings.con1}</li>
                             <li>{strings.con2}</li>

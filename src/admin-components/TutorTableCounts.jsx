@@ -49,7 +49,7 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                     >
                         <thead>
                         <tr>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'20px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
+                            <th className={'title-font'} style={{fontSize: '15px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.level}</th>

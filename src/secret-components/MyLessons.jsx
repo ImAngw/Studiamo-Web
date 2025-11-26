@@ -137,7 +137,7 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
                     >
                         <thead>
                         <tr>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'20px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.data}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'45px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'45px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
@@ -151,13 +151,13 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
                         <tbody>
                         {allLessons && (allLessons.map((lesson, index) => (
                             <tr key={index}>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{lesson.lesson_date}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{lesson.lesson_hours}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{lesson.lesson_minutes}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{lesson.lesson_mod}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{lesson.lesson_type}</td>
-                                <td className={'main-font'} style={{fontSize: '15px', textAlign: 'left'}}>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{index + 1}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_date}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_hours}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_minutes}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_mod}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_type}</td>
+                                <td className={'main-font'} style={{fontSize: '11px', textAlign: 'left'}}>
                                     <StudentsDropDown students={Object.values(lesson.student_list)} studentsList={studentsList}/>
                                 </td>
 

@@ -21,12 +21,16 @@ function TutorPage() {
     }
 
     return (
-        <div className={'tutor-style'} style={{paddingRight:15, paddingLeft:15}}>
+        <div className={'tutor-style'} style={{overflowX: 'hidden'}}>
+
             <Header img={img}/>
-            <h1 className={'title-font'}>{strings.title}</h1>
-            <p className={'main-font'}>{strings.par1}</p>
-            <p className={'main-font'}>{strings.par2}</p>
+            <div style={{paddingRight:15, paddingLeft:15, paddingTop:50}}>
+                <h1 className={'title-font'}>{strings.title}</h1>
+                <p className={'main-font'}>{strings.par1}</p>
+                <p className={'main-font'}>{strings.par2}</p>
+            </div>
             <Login />
+
         </div>
 
     );

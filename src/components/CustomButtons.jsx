@@ -37,7 +37,7 @@ export function ButtonWithText({action, text}) {
                     padding: 0,
                 }}
             >
-                <p className={'main-font'} style={{fontSize: '30px', textAlign: 'center'}}>{text}</p>
+                <p className={'title-font'} style={{fontSize: '30px', textAlign: 'center', color:"black"}}>{text}</p>
             </button>
         </div>
     );

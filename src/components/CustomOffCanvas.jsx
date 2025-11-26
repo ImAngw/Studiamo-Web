@@ -10,6 +10,9 @@ import {WindowSizeContext} from "../context/Context";
 
 
 import menuIcon from '../assets/icons/dots.png'
+import imAngIcon from '../assets/icons/imagw-logo.png'
+import img from "../assets/logo/logo.jpg";
+
 
 
 
@@ -39,7 +42,7 @@ function CustomOffCanvas() {
                 <Offcanvas.Header>
                     <Offcanvas.Title style={{width: '100%'}}>
                         <h1 className={'title-font'} style={{fontSize: '50px', textAlign: 'center'}}> StudiAmo</h1>
-                        <h2 className={'main-font'} style={{fontSize: '18px', textAlign: 'center'}}>{strings.subtitle}</h2>
+                        <h2 className={'title-font'} style={{fontSize: '18px', textAlign: 'center', color:'black'}}>{strings.subtitle}</h2>
                     </Offcanvas.Title>
                 </Offcanvas.Header>
 
@@ -73,8 +76,19 @@ function CustomOffCanvas() {
                     <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
                 </Offcanvas.Body>
 
-                <div  style={{textAlign:'center', fontSize: '10px'}}>
-                    <p>{strings.powered_by}</p>
+                <div
+                    style={{
+                        paddingTop: '10px',
+                        paddingBottom: '10px',
+                        display: 'flex',
+                        flexDirection: 'row',       // elementi affiancati
+                        justifyContent: 'center',   // centra orizzontalmente
+                        alignItems: 'center',       // centra verticalmente
+                        gap: '5px'                  // spazio tra testo e immagine
+                    }}
+                >
+                    <p style={{ margin: 0, fontSize:11}}>{strings.powered_by}</p>
+                    <img src={imAngIcon} alt="Image" style={{ height: '40px', width: '40px' }} />
                 </div>
             </Offcanvas>
         </div>

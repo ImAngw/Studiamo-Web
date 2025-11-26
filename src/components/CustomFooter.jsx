@@ -5,6 +5,7 @@ import posIcon from '../assets/icons/placeholder.png'
 import mailIcon from '../assets/icons/email.png'
 import phoneIcon from '../assets/icons/telephone.png'
 import instaIcon from '../assets/icons/instagram.png'
+import imAngIcon from '../assets/icons/imagw-logo.png'
 import whatsappIcon from '../assets/icons/whatsapp.png'
 import img from '../assets/logo/logo.jpg';
 import Modal from 'react-bootstrap/Modal';
@@ -41,25 +42,25 @@ function CustomFooter() {
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5x', position: 'relative'}}>
                         <Image style={{height: '25px', width: '25px'}} src={posIcon}/>
-                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '20px'}}>{strings.first_address}</p>
+                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.first_address}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
                         <Image style={{height: '25px', width: '25px'}} src={posIcon}/>
-                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '20px'}}>{strings.second_address}</p>
+                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.second_address}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
                         <Image style={{height: '25px', width: '25px'}} src={mailIcon}/>
-                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '20px'}}>{strings.email}</p>
+                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.email}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
                         <Image style={{height: '20px', width: '25px'}} src={phoneIcon}/>
-                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '20px'}}>{strings.phone}</p>
+                        <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.phone}</p>
                     </div>
 
-                    <h2 style={{paddingBottom: '5px', fontSize: '35px', position: 'relative'}} className={"title-font"}>
+                    <h2 style={{paddingBottom: '5px', fontSize: '35px', position: 'relative', paddingTop:15}} className={"title-font"}>
                         {strings.social}
                     </h2>
 
@@ -144,10 +145,21 @@ function CustomFooter() {
 
                         </Modal>
                     </div>
+                </div>
 
-                    <div style={{position: 'relative', textAlign: 'center', fontSize: '11px'}}>
-                        <p>{strings.powered_by}</p>
-                    </div>
+                <div
+                    style={{
+                        paddingTop: '10px',
+                        paddingBottom: '10px',
+                        display: 'flex',
+                        flexDirection: 'row',       // elementi affiancati
+                        justifyContent: 'center',   // centra orizzontalmente
+                        alignItems: 'center',       // centra verticalmente
+                        gap: '5px'                  // spazio tra testo e immagine
+                    }}
+                >
+                    <p style={{ margin: 0, fontSize:11}}>{strings.powered_by}</p>
+                    <img src={imAngIcon} alt="Image" style={{ height: '40px', width: '40px' }} />
                 </div>
             </footer>
         </div>

@@ -47,13 +47,13 @@ function LoginPage() {
             <div className="card p-4 shadow" style={{ width: "95%", borderRadius: "10px"}}>
                 <form onSubmit={handleSubmit}>
                     {/* Username */}
-                    <div className="mb-3 main-font">
+                    <div className="mb-3 title-font" style={{fontSize:30, }}>
                         <label htmlFor="username" className="form-label">
                             <b>Username</b>
                         </label>
                         <input
                             type="text"
-                            className="form-control"
+                            className="form-control main-font"
                             id="username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -64,13 +64,13 @@ function LoginPage() {
                     </div>
 
                     {/* Password */}
-                    <div className="mb-3 main-font">
+                    <div className="mb-3 title-font" style={{fontSize:30, }}>
                         <label htmlFor="password" className="form-label">
                             <b>Password</b>
                         </label>
                         <input
                             type="password"
-                            className="form-control"
+                            className="form-control main-font"
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
