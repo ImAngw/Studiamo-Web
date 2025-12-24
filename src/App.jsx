@@ -8,11 +8,17 @@ import TutorPage from './main-pages/TutorPage';
 import JoinUsPage from "./main-pages/JoinUsPage";
 
 import TutorDashboard from "./secret-pages/TutorDashboard";
-import AdminTutorPage from "./admin-pages/AdminTutorPage";
+import CoursesPage from "./secret-pages/CoursesPage";
+import AdminHome from "./admin-pages/AdminHome";
 import StudentsPage from "./admin-pages/StudentsPage";
+import AdminCoursePage from "./admin-pages/AdminCoursePage";
+import AdminTutorPage from "./admin-pages/TutorPage";
 
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import {AppUserProvider} from "./provider/AppDataContext";
+import {AppTutorProvider, AppLessonsProvider, AppCourseLessonsProvider} from "./provider/AppTutorContext";
+import {AppAdminProfileProvider, AppAdminProvider, AppAdminStudentsProvider} from "./provider/AppAdminContext";
 
 
 
@@ -29,16 +35,48 @@ function App() {
                     path="/tutor_dashboard"
                     element={
                         <ProtectedRoute>
-                            <TutorDashboard />
+                            <AppCourseLessonsProvider>
+                                <AppLessonsProvider>
+                                    <AppTutorProvider>
+                                        <AppUserProvider>
+                                            <TutorDashboard />
+                                        </AppUserProvider>
+                                    </AppTutorProvider>
+                                </AppLessonsProvider>
+                            </AppCourseLessonsProvider>
                         </ProtectedRoute>
                     }
                 />
 
                 <Route
-                    path="/admin_tutor_page"
+                    path="/courses_page"
                     element={
                         <ProtectedRoute>
-                            <AdminTutorPage />
+                            <AppCourseLessonsProvider>
+                                <AppLessonsProvider>
+                                    <AppTutorProvider>
+                                        <AppUserProvider>
+                                            <CoursesPage />
+                                        </AppUserProvider>
+                                    </AppTutorProvider>
+                                </AppLessonsProvider>
+                            </AppCourseLessonsProvider>
+                        </ProtectedRoute>
+                    }
+                />
+
+
+                <Route
+                    path="/admin_home"
+                    element={
+                        <ProtectedRoute>
+                            <AppAdminStudentsProvider>
+                                <AppAdminProvider>
+                                    <AppAdminProfileProvider>
+                                        <AdminHome />
+                                    </AppAdminProfileProvider>
+                                </AppAdminProvider>
+                            </AppAdminStudentsProvider>
                         </ProtectedRoute>
                     }
                 />
@@ -47,7 +85,43 @@ function App() {
                     path="/students_page"
                     element={
                         <ProtectedRoute>
-                            <StudentsPage />
+                            <AppAdminStudentsProvider>
+                                <AppAdminProvider>
+                                    <AppAdminProfileProvider>
+                                        <StudentsPage />
+                                    </AppAdminProfileProvider>
+                                </AppAdminProvider>
+                            </AppAdminStudentsProvider>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin_course_page"
+                    element={
+                        <ProtectedRoute>
+                            <AppAdminStudentsProvider>
+                                <AppAdminProvider>
+                                    <AppAdminProfileProvider>
+                                        <AdminCoursePage />
+                                    </AppAdminProfileProvider>
+                                </AppAdminProvider>
+                            </AppAdminStudentsProvider>
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/admin_tutor_page"
+                    element={
+                        <ProtectedRoute>
+                            <AppAdminStudentsProvider>
+                                <AppAdminProvider>
+                                    <AppAdminProfileProvider>
+                                        <AdminTutorPage />
+                                    </AppAdminProfileProvider>
+                                </AppAdminProvider>
+                            </AppAdminStudentsProvider>
                         </ProtectedRoute>
                     }
                 />

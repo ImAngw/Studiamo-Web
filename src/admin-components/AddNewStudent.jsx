@@ -5,8 +5,9 @@ import {ButtonWithIcon} from "../components/CustomButtons";
 import addUser from "../assets/icons/add-button.png";
 import searchIcon from "../assets/icons/search.png";
 import removeIcon from "../assets/icons/remove-user.png";
-import {getTutorBySurname, addNewStudent, addTutorStudentRelation} from "../supabase/DBAdminFunctions";
+import {getTutorBySurname, addNewStudent, addTutorStudentRelation, addStudentCourseRelation} from "../supabase/DBAdminFunctions";
 import Dropdown from "react-bootstrap/Dropdown";
+import {useAdminData} from "../provider/AppAdminContext";
 
 
 
@@ -24,6 +25,14 @@ function AddNewStudent({setIsOpen}) {
     const strings = t("addNewStudentPage", { returnObjects: true });
     const allowedSex = ["M", "F"]
 
+    const {courses} = useAdminData()
+
+    const [coursesToAdd, setCoursesToAdd] = useState([]);
+    const [searchedCourseStr, setSearchedCourseStr] = useState('');
+    const [searchedCourses, setSearchedCourse] = useState([]);
+
+
+
     const [tutorsToAdd, setTutorsToAdd] = useState([]);
     const [searchedStr, setSearchedStr] = useState('');
     const [searchedTutors, setSearchedTutors] = useState([]);
@@ -39,6 +48,9 @@ function AddNewStudent({setIsOpen}) {
         sex: "M"
     });
 
+    const [courseData, setCourseData] = useState([])
+
+
     const handleDataChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({
@@ -47,9 +59,31 @@ function AddNewStudent({setIsOpen}) {
         }));
     };
 
+    const handleCourseDataChange = (event, id_course) => {
+        const { name, value } = event.target;
+        setCourseData(prev =>
+            prev.map(item =>
+                item.course_id === id_course
+                    ? { ...item, [name]: value }
+                    : item
+            )
+        );
+    }
+
+
     const handleChange = (event) => {
         setSearchedStr(event.target.value);
     };
+
+
+    const handleCourseChange = (event) => {
+        setSearchedCourseStr(event.target.value);
+        const filtered = courses.filter(c =>
+            c.name.toLowerCase().includes(event.target.value.toLowerCase())
+        );
+        setSearchedCourse(filtered);
+    };
+
 
     useEffect(() => {
         const fetchTutorsBySurname = async () => {
@@ -125,7 +159,7 @@ function AddNewStudent({setIsOpen}) {
                 <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
 
 
-                <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:10, alignItems:'center'}}>
                     <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.surname}:</h1>
                     <input
                         name={"surname"}
@@ -192,7 +226,7 @@ function AddNewStudent({setIsOpen}) {
                 </div>
                 <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
 
-                <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.select_tutor}</h1>
+                <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:25, paddingTop:40}}> {strings.select_tutor}</h1>
                 <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingTop:20 }}>
                     {/* search bar */}
                     <div style={{
@@ -267,7 +301,7 @@ function AddNewStudent({setIsOpen}) {
                 </div>
 
                 {tutorsToAdd.map((tutor, idx) => (
-                    <div key={idx} style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:10}}>
+                    <div key={idx} style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:30}}>
                         <p style={{ display: 'inline', margin: 0, alignContent:'center'}} className={'main-font'}><b>{idx + 1}:</b></p>
                         <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{tutor.tutor_surname + " " + tutor.tutor_name}</p>
                         <ButtonWithIcon
@@ -282,21 +316,223 @@ function AddNewStudent({setIsOpen}) {
                     </div>
                 ))}
 
+                <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:25, paddingTop:50}}> {strings.select_course}</h1>
+                <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingTop:20 }}>
+                    {/* search bar */}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '4px 8px',
+                        maxWidth: '90%',
+                        backgroundColor: '#fff',
+                        margin: '0 auto',
+                    }}>
+                        <img
+                            src={searchIcon}
+                            alt="search"
+                            style={{ width: '18px', height: '18px', marginRight: '6px', opacity: 0.6 }}
+                        />
+                        <input
+                            type="text"
+                            value={searchedCourseStr}
+                            onChange={handleCourseChange}
+                            placeholder="Cerca corso per nome..."
+                            style={{
+                                border: 'none',
+                                outline: 'none',
+                                width: '100%',
+                                fontSize: '15px'
+                            }}
+                        />
+                    </div>
+
+                    {/* dropdown con i risultati */}
+                    {searchedCourses.length > 0 && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '100%',
+                            left: 0,
+                            right: 0,
+                            backgroundColor: '#fff',
+                            border: '1px solid #ccc',
+                            borderRadius: '8px',
+                            marginTop: '4px',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                            zIndex: 10,
+                            maxHeight: '200px',
+                            width: '90%',
+                            overflowY: 'auto',
+                            margin: '0 auto'
+                        }}>
+                            {searchedCourses.map((course, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => {
+                                        setCoursesToAdd(prev =>
+                                            prev.some(c => c.id_course === course.id_course)
+                                                ? prev
+                                                : [...prev, course]
+                                        );
+
+
+                                        setCourseData(prev => {
+                                            // se esiste già un elemento con lo stesso id, non aggiungere
+                                            if (prev.some(item => item.course_id === course.id_course)) {
+                                                return prev; // restituisce la lista invariata
+                                            }
+
+                                            // altrimenti aggiungi il nuovo dizionario
+                                            return [
+                                                ...prev,
+                                                {
+                                                    course_id: course.id_course,
+                                                    price: "0",
+                                                    f_date: formatDate(today.getFullYear(), today.getMonth() + 1, today.getDate()),
+                                                    l_date: formatDate(today.getFullYear(), today.getMonth() + 1, new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate())
+                                                }
+                                            ];
+                                        });
+                                        setSearchedCourse([]);
+                                        setSearchedCourseStr('');
+
+                                    }}
+                                    style={{
+                                        padding: '8px 10px',
+                                        cursor: 'pointer',
+                                        borderBottom: '1px solid #eee',
+                                    }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+                                >
+                                    {course.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {coursesToAdd.map((course, idx) => (
+                    <div style={{paddingTop:20}} key={idx}>
+                        <div style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:10}}>
+                            <p style={{ display: 'inline', margin: 0, alignContent:'center'}} className={'main-font'}><b>{idx + 1}:</b></p>
+                            <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{course.name}</p>
+                            <ButtonWithIcon
+                                icon={removeIcon}
+                                action={() => {
+                                    const availableCourses = coursesToAdd.filter(
+                                        c => c.id_course !== course.id_course
+                                    );
+                                    const filtered = courseData.filter(item => item.course_id !== course.id_course);
+                                    setCourseData(filtered);
+                                    setCoursesToAdd(availableCourses);
+                                }}
+                            />
+                        </div>
+                        <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
+
+                        <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
+                            <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.price}:</h1>
+                            <input
+                                name={"price"}
+                                value={courseData.find(c => c.course_id === course.id_course)?.price || ""}
+                                onChange={(e) => handleCourseDataChange(e, course.id_course)}
+                                placeholder=" "
+                                className={'main-font'}
+                                style={{ width: '100px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
+                            />
+                        </div>
+                        <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
+
+                        <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
+                            <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.firstDay}:</h1>
+                            <input
+                                name={"f_date"}
+                                value={courseData.find(c => c.course_id === course.id_course)?.f_date || ""}
+                                onChange={(e) => handleCourseDataChange(e, course.id_course)}
+                                placeholder=" "
+                                className={'main-font'}
+                                style={{ width: '150px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
+                            />
+                        </div>
+                        <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
+
+                        <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
+                            <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.lastDay}:</h1>
+                            <input
+                                name={"l_date"}
+                                value={courseData.find(c => c.course_id === course.id_course)?.l_date || ""}
+                                onChange={(e) => handleCourseDataChange(e, course.id_course)}
+                                placeholder=" "
+                                className={'main-font'}
+                                style={{ width: '150px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
+                            />
+                        </div>
+
+                        <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
+
+                    </div>
+                ))}
+
+
                 <div style={{display: 'flex', flexDirection:'row', margin:'0 auto', justifyContent:'center', paddingTop:40}}>
                     <ButtonWithIcon
                         action={async () => {
+                            const isNumber = (str) => {
+                                const strin = String(str);
+                                return !isNaN(strin) && strin.trim() !== "";
+                            };
+
+                            const isValidDateFormat = (str) => {
+                                return /^\d{4}-\d{2}-\d{2}$/.test(str);
+                            };
+
                             let newId = 0;
+                            let errorStr = ""
+
 
                             if (formData.name === "" || formData.surname === "" || formData.date === "" || formData.phone === "") {
                                 alert(t(strings.alert_msg));
                             } else {
-                                newId = await addNewStudent(formData.sex, formData.name, formData.surname, formData.phone, formData.date);
-                                for (let t of tutorsToAdd) {
-                                    await addTutorStudentRelation(newId, t.tutor_id)
+                                if (courseData.length !== 0) {
+                                    for (let c of courseData) {
+                                        if (!isNumber(c.price)){
+                                            errorStr += "- Il prezzo deve essere un numero.\n"
+                                        }
+                                        if (isValidDateFormat(c.f_date) && isValidDateFormat(c.l_date)){
+                                            const date1 = new Date(c.f_date);
+                                            const date2 = new Date(c.l_date);
+                                            if (date1 > date2) {
+                                                errorStr += "La data di inizio è più avanti nel tempo della data di fine.\n"
+                                            }
+                                        } else {
+                                            errorStr += "- Le date devono essere nel formato AAAA-MM-GG.\n"
+                                        }
+                                    }
                                 }
-                                window.location.reload();
-                                alert(strings.success)
-                                setIsOpen(false);
+
+                                if (errorStr !== "") {
+                                    alert(errorStr)
+                                } else {
+                                    newId = await addNewStudent(formData.sex, formData.name, formData.surname, formData.phone, formData.date);
+                                    for (let t of tutorsToAdd) {
+                                        await addTutorStudentRelation(newId, t.tutor_id)
+                                    }
+
+                                    for (let c of courseData) {
+                                        await addStudentCourseRelation(
+                                            c.course_id,
+                                            newId,
+                                            Number(c.price),
+                                            c.f_date,
+                                            c.l_date
+                                        )
+                                    }
+                                    window.location.reload();
+                                    alert(strings.success)
+                                    setIsOpen(false);
+                                }
                             }
                         }}
                         icon={addUser}

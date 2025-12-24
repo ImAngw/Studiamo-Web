@@ -19,7 +19,7 @@ export async function maintainLogin(user, navigate) {
         .single()
 
     if (userInfo.role === 4) {
-        navigate('/admin_tutor_page', { state: { user } })
+        navigate('/admin_home', { state: { user } })
     } else {
         navigate('/tutor_dashboard', { state: { user } })
     }
@@ -61,7 +61,7 @@ export async function login({ username, password }, navigate, setError, setLoadi
     }
 
     if (userInfo.role === 4) {
-        navigate('/admin_tutor_page', { state: { user } })
+        navigate('/admin_home', { state: { user } })
     } else {
         navigate('/tutor_dashboard', { state: { user } })
     }

@@ -1,70 +1,56 @@
 import React, {useEffect, useState} from "react";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import closeIcon from "../assets/icons/close.png";
-import confirmIcon from "../assets/icons/confirm.png";
+import {useTranslation} from "react-i18next";
+
+import {
+    getFollowedStudentsAdmin,
+    getStudBySurname,
+    removeTutorStudentRelation,
+    getTutorCourse,
+    updateTutor, addTutorStudentRelation, removeTutorCourseRelation, addStudentCourseRelation,
+    updateStudentCourseRelation, addTutorCourseRelation, updateTutorCourseRelation
+} from "../supabase/DBAdminFunctions";
 import removeIcon from "../assets/icons/remove-user.png";
 import searchIcon from "../assets/icons/search.png";
-import { useTranslation } from 'react-i18next';
-import {
-    getTutorBySurname, getTutorsOfStudent, updateStudent, addTutorStudentRelation, removeTutorStudentRelation,
-    getStudentCourses, removeStudentCourseRelation, addStudentCourseRelation, updateStudentCourseRelation
-} from "../supabase/DBAdminFunctions";
-import {useAdminData} from "../provider/AppAdminContext";
+import {useAdminData, useAdminStudentsData} from "../provider/AppAdminContext";
+import confirmIcon from "../assets/icons/confirm.png";
 
 
 
-function formatDate(year, month, day) {
-    const mm = String(month).padStart(2, '0');
-    const dd = String(day).padStart(2, '0');
-    return `${year}-${mm}-${dd}`;
-}
 
-
-
-function StudentInfoPage({setIsOpen, student}) {
+function TutorInfoPage({setIsOpen, tutor}) {
     const { t } = useTranslation();
-    const strings = t("studentInfoPage", { returnObjects: true });
+    const strings = t("TutorInfoPage", { returnObjects: true });
 
-
+    const [students, setStudents] = useState([]);
+    const [tutorCourses, setTutorCourses] = useState([]);
     const {courses} = useAdminData()
-    const [searchedCourseStr, setSearchedCourseStr] = useState('');
-    const [searchedCourses, setSearchedCourse] = useState([]);
+    const {tutorRoles} = useAdminStudentsData();
 
-
-
-    const [allTutors, setAllTutors] = useState([]);
-    const [searchedStr, setSearchedStr] = useState('');
-    const [searchedTutors, setSearchedTutors] = useState([]);
-    const [tutorsToAdd, setTutorsToAdd] = useState([]);
-
-    const [pushButton, setPushButton] = useState(false);
-
-    const [allCourses, setAllCourses] = useState([])
 
     const [formData, setFormData] = useState({
-        name: student.stud_name,
-        surname: student.stud_surname,
-        date: student.stud_date,
-        phone: student.telephone
+        uid: tutor.uid,
+        name: tutor.name,
+        surname: tutor.surname,
+        role: tutor.role,
+        lastActivity: tutor.last_activity_date
     });
 
 
-    const handleCourseDataChange = (event, id_course) => {
-        const { name, value } = event.target;
-        setAllCourses(prev =>
-            prev.map(item =>
-                item.id_course === id_course
-                    ? { ...item, [name]: String(value) }
-                    : item
-            )
-        );
-    }
+
+    const [searchedStr, setSearchedStr] = useState('');
+    const [searchedStudents, setSearchedStudents] = useState([]);
+    const [studentsToAdd, setStudentsToAdd] = useState([]);
+
+
+    const [searchedCourseStr, setSearchedCourseStr] = useState('');
+    const [searchedCourses, setSearchedCourse] = useState([]);
 
 
     const handleChange = (event) => {
         setSearchedStr(event.target.value);
     };
-
     const handleDataChange = (event) => {
         const { name, value } = event.target;
         setFormData((prev) => ({
@@ -72,7 +58,16 @@ function StudentInfoPage({setIsOpen, student}) {
             [name]: value,
         }));
     };
-
+    const handleCourseDataChange = (event, id_course) => {
+        const { name, value } = event.target;
+        setTutorCourses(prev =>
+            prev.map(item =>
+                item.id_course === id_course
+                    ? { ...item, [name]: String(value) }
+                    : item
+            )
+        );
+    }
     const handleCourseChange = (event) => {
         setSearchedCourseStr(event.target.value);
         const filtered = courses.filter(c =>
@@ -83,48 +78,44 @@ function StudentInfoPage({setIsOpen, student}) {
 
 
     useEffect(() => {
-        const fetchTutorsBySurname = async () => {
+        const fetchData = async () => {
+            const stud = await getFollowedStudentsAdmin(tutor.uid);
+            setStudents(stud);
+
+            const c = await getTutorCourse(tutor.uid);
+            setTutorCourses(c);
+        }
+        fetchData();
+    }, [])
+
+
+
+    useEffect(() => {
+        const fetchStudentsBySurname = async () => {
             try {
-                const tutorBySurname = await getTutorBySurname(searchedStr);
-                let availableTutors = tutorBySurname.filter(
-                    tutor => !allTutors.some(t => t.tutor_id === tutor.tutor_id)
+                const studentBySurname = await getStudBySurname(searchedStr);
+                let availableStudents = studentBySurname.filter(
+                    stud => !students.some(s => s.student_id === stud.student_id)
                 );
 
-                availableTutors = availableTutors.filter(
-                    tutor => !tutorsToAdd.some(t => t.tutor_id === tutor.tutor_id)
+                availableStudents = availableStudents.filter(
+                    stud => !studentsToAdd.some(s => s.stud_id === stud.stud_id)
                 );
 
-                setSearchedTutors(availableTutors);
+                setSearchedStudents(availableStudents);
             } catch (err) {
                 console.error(err);
             }
         };
 
         if (searchedStr.trim() === '') {
-            setSearchedTutors([]);
+            setSearchedStudents([]);
             return;
         }
-        fetchTutorsBySurname();
+        fetchStudentsBySurname();
 
     }, [searchedStr]);
 
-
-
-    useEffect(() => {
-        const fetchTutors = async () => {
-            try {
-                const tutors = await getTutorsOfStudent(student.stud_id);
-                setAllTutors(tutors);
-
-                const courses = await getStudentCourses(student.stud_id);
-                setAllCourses(courses);
-
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchTutors();
-    }, [pushButton]);
 
 
     return (
@@ -162,7 +153,7 @@ function StudentInfoPage({setIsOpen, student}) {
                 </div>
 
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.name}:</h1>
+                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:18}}> {strings.name}:</h1>
                     <input
                         type="text"
                         name={"name"}
@@ -170,79 +161,70 @@ function StudentInfoPage({setIsOpen, student}) {
                         onChange={handleDataChange}
                         placeholder=" "
                         className={'main-font'}
-                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 25}}
+                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 22}}
                     />
                 </div>
-                <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
-
 
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.surname}:</h1>
+                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:18}}> {strings.surname}:</h1>
                     <input
+                        type="text"
                         name={"surname"}
                         value={formData.surname}
                         onChange={handleDataChange}
                         placeholder=" "
                         className={'main-font'}
-                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 25}}
+                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 22}}
                     />
                 </div>
-                <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
-
 
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.data}:</h1>
+                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:18}}> {strings.role}:</h1>
                     <input
-                        name={"date"}
-                        value={formData.date}
+                        type="text"
+                        name={"role"}
+                        value={formData.role}
                         onChange={handleDataChange}
                         placeholder=" "
                         className={'main-font'}
-                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 25}}
+                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 22}}
                     />
                 </div>
-                <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
-
 
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:25}}> {strings.phone}:</h1>
-                    <input
-                        name={"phone"}
-                        value={formData.phone}
-                        onChange={handleDataChange}
-                        placeholder=" "
-                        className={'main-font'}
-                        style={{ width: '200px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 25}}
-                    />
-                </div>
-                <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
-
-
-                <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:70, alignItems:'center', paddingTop:30, paddingBottom:10}}>
-                    <h1 className="title-font" style={{textAlign: 'left', margin: 0, fontSize:25, alignItems:'center'}}> {strings.followed_by}</h1>
+                    <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:18}}> {strings.lastActivity}:</h1>
+                    <p className="main-font" style={{textAlign: 'center', margin: 0, fontSize:22}}> {formData.lastActivity}</p>
                 </div>
 
 
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20, paddingTop:30}}>
+                    <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:30}}> {strings.followed_students}</h1>
+                </div>
 
-                {allTutors.map((tutor, idx) => (
-                    <div key={idx} style={{display: 'flex', flexDirection:'row', paddingTop:10, justifyContent:'space-between'}}>
+                {students.map((student, idx) => (
+                    <div key={idx} style={{display: 'flex', flexDirection:'row', paddingTop:15, justifyContent:'space-between'}}>
                         <div>
                             <p style={{ display: 'inline', margin: 0, alignContent:'center'}} className={'main-font'}><b>{idx + 1}:</b></p>
-                            <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{tutor.tutor_surname + " " + tutor.tutor_name }</p>
+                            <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{student.student_surname + " " + student.student_name }</p>
                         </div>
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'flex-end', paddingRight:40}}>
                             <ButtonWithIcon
                                 icon={removeIcon}
                                 action={async () => {
-                                    await removeTutorStudentRelation(student.stud_id, tutor.tutor_id);
-                                    setPushButton(!pushButton);
+                                    await removeTutorStudentRelation(student.student_id, formData.uid);
+                                    const filtered = students.filter(stud => stud.student_id !== student.student_id);
+
+                                    setStudents(filtered);
                                 }}
                             />
                         </div>
                     </div>
                 ))}
 
-                <h1 className="title-font" style={{textAlign: 'left', margin: 0, fontSize:25, alignItems:'center', paddingTop:30, paddingBottom:10}}> {strings.new_tutors}</h1>
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20, paddingTop:30}}>
+                    <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:30}}> {strings.new_students}</h1>
+                </div>
+
                 <div style={{ position: 'relative', width: '100%', margin: '0 auto' }}>
                     {/* search bar */}
                     <div style={{
@@ -264,7 +246,7 @@ function StudentInfoPage({setIsOpen, student}) {
                             type="text"
                             value={searchedStr}
                             onChange={handleChange}
-                            placeholder="Cerca tutor per cognome..."
+                            placeholder="Cerca studente per cognome..."
                             style={{
                                 border: 'none',
                                 outline: 'none',
@@ -275,7 +257,7 @@ function StudentInfoPage({setIsOpen, student}) {
                     </div>
 
                     {/* dropdown con i risultati */}
-                    {searchedTutors.length > 0 && (
+                    {searchedStudents.length > 0 && (
                         <div style={{
                             position: 'absolute',
                             top: '100%',
@@ -292,12 +274,12 @@ function StudentInfoPage({setIsOpen, student}) {
                             overflowY: 'auto',
                             margin: '0 auto'
                         }}>
-                            {searchedTutors.map((tutor, index) => (
+                            {searchedStudents.map((stud, index) => (
                                 <div
                                     key={index}
                                     onClick={() => {
-                                        setTutorsToAdd([...tutorsToAdd, tutor]);
-                                        setSearchedTutors([]);
+                                        setStudentsToAdd([...studentsToAdd, stud]);
+                                        setSearchedStudents([]);
                                         setSearchedStr('');
 
                                     }}
@@ -309,25 +291,24 @@ function StudentInfoPage({setIsOpen, student}) {
                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                                 >
-                                    {tutor.tutor_surname} {tutor.tutor_name}
+                                    {stud.stud_surname} {stud.stud_name}
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-
-                {tutorsToAdd.map((tutor, idx) => (
-                    <div key={idx} style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:10}}>
+                {studentsToAdd.map((student, idx) => (
+                    <div key={idx} style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:25}}>
                         <p style={{ display: 'inline', margin: 0, alignContent:'center'}} className={'main-font'}><b>{idx + 1}:</b></p>
-                        <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{tutor.tutor_surname + " " + tutor.tutor_name}</p>
+                        <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{student.stud_surname + " " + student.stud_name}</p>
                         <ButtonWithIcon
                             icon={removeIcon}
                             action={() => {
-                                const availableTutors = tutorsToAdd.filter(
-                                    t => t.tutor_id !== tutor.tutor_id
+                                const availableStudents = studentsToAdd.filter(
+                                    s => s.stud_id !== student.stud_id
                                 );
-                                setTutorsToAdd(availableTutors);
+                                setStudentsToAdd(availableStudents);
                             }}
                         />
 
@@ -335,16 +316,14 @@ function StudentInfoPage({setIsOpen, student}) {
                 ))}
 
 
-
-
-                <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:70, alignItems:'center', paddingTop:50, paddingBottom:10}}>
-                    <h1 className="title-font" style={{textAlign: 'left', margin: 0, fontSize:25, alignItems:'center'}}> {strings.followed_courses}</h1>
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20, paddingTop:40}}>
+                    <h1 className="title-font" style={{textAlign: 'center', margin: 0, fontSize:30}}> {strings.followed_courses}</h1>
                 </div>
 
 
-                {allCourses.map((course, idx) => (
+                {tutorCourses.map((course, idx) => (
                     <div key={idx}>
-                        <div style={{paddingTop:20}}>
+                        <div style={{paddingTop:25}}>
                             <div style={{display: 'flex', flexDirection:'row', alignItems:'center', paddingTop:10}}>
                                 <p style={{ display: 'inline', margin: 0, alignContent:'center'}} className={'main-font'}><b>{idx + 1}:</b></p>
                                 <p style={{ display: 'inline', margin: 0, paddingRight: 20}} className={"main-font"}>{course.name}</p>
@@ -352,10 +331,10 @@ function StudentInfoPage({setIsOpen, student}) {
                                     icon={removeIcon}
                                     action={async () => {
                                         if (!course.hasOwnProperty("isNew")) {
-                                            await removeStudentCourseRelation(course.id_course, student.stud_id);
+                                            await removeTutorCourseRelation(course.id_course, formData.uid);
                                         }
-                                        const filtered = allCourses.filter(item => item.id_course !== course.id_course);
-                                        setAllCourses(filtered);
+                                        const filtered = tutorCourses.filter(item => item.id_course !== course.id_course);
+                                        setTutorCourses(filtered);
                                     }}
                                 />
 
@@ -363,53 +342,26 @@ function StudentInfoPage({setIsOpen, student}) {
                                     <p style={{ display: 'inline', margin: 0, paddingLeft: 50, color:"red"}} className={"main-font"}>New</p>
                                 )}
                             </div>
-                            <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
+                            <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '1px 0', paddingTop: '1px 0' }} />
 
                             <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
                                 <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.price}:</h1>
                                 <input
-                                    name={"month_price"}
-                                    value={course.month_price}
+                                    name={"price_per_hour"}
+                                    value={course.price_per_hour}
                                     onChange={(e) => handleCourseDataChange(e, course.id_course)}
                                     placeholder=" "
                                     className={'main-font'}
                                     style={{ width: '100px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
                                 />
                             </div>
-                            <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
-
-                            <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                                <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.firstDay}:</h1>
-                                <input
-                                    name={"first_date"}
-                                    value={course.first_date}
-                                    onChange={(e) => handleCourseDataChange(e, course.id_course)}
-                                    placeholder=" "
-                                    className={'main-font'}
-                                    style={{ width: '150px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
-                                />
-                            </div>
-                            <hr style={{ border: 'none', borderTop: '1px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
-
-                            <div style={{display: 'flex', flexDirection:'row', justifyContent:'flex-start', gap:30, alignItems:'center'}}>
-                                <h1 className="main-font" style={{textAlign: 'center', margin: 0, fontSize:15}}> {strings.lastDay}:</h1>
-                                <input
-                                    name={"last_date"}
-                                    value={course.last_date}
-                                    onChange={(e) => handleCourseDataChange(e, course.id_course)}
-                                    placeholder=" "
-                                    className={'main-font'}
-                                    style={{ width: '150px', border: '0px solid black', borderRadius: '8px', padding: '5px', fontSize: 18}}
-                                />
-                            </div>
-
-                            <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '5px 0', paddingTop: '5px 0' }} />
-
+                            <hr style={{ border: 'none', borderTop: '3px solid black', paddingBottom: '2px 0', paddingTop: '2px 0' }} />
                         </div>
                     </div>
                 ))}
 
-                <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingTop:20 }}>
+
+                <div style={{ position: 'relative', width: '100%', margin: '0 auto', paddingTop:30 }}>
                     {/* search bar */}
                     <div style={{
                         display: 'flex',
@@ -462,8 +414,7 @@ function StudentInfoPage({setIsOpen, student}) {
                                 <div
                                     key={index}
                                     onClick={() => {
-                                        setAllCourses(prev => {
-                                            const today = new Date();
+                                        setTutorCourses(prev => {
                                             // se esiste già un elemento con lo stesso id, non aggiungere
                                             if (prev.some(item => item.id_course === course.id_course)) {
                                                 return prev; // restituisce la lista invariata
@@ -475,9 +426,7 @@ function StudentInfoPage({setIsOpen, student}) {
                                                 {
                                                     id_course: course.id_course,
                                                     name: course.name,
-                                                    month_price: "0",
-                                                    first_date: formatDate(today.getFullYear(), today.getMonth() + 1, today.getDate()),
-                                                    last_date: formatDate(today.getFullYear(), today.getMonth() + 1, new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate()),
+                                                    price_per_hour: "0",
                                                     isNew: true
                                                 }
                                             ];
@@ -501,7 +450,8 @@ function StudentInfoPage({setIsOpen, student}) {
                     )}
                 </div>
 
-                <div style={{display: 'flex', justifyContent:'center', paddingTop:30, paddingBottom:10}}>
+
+                <div style={{display: 'flex', justifyContent:'center', paddingTop:50, paddingBottom:20}}>
                     <ButtonWithIcon
                         icon={confirmIcon}
                         action={async () => {
@@ -510,71 +460,75 @@ function StudentInfoPage({setIsOpen, student}) {
                                 return !isNaN(strin) && strin.trim() !== "";
                             };
 
-                            const isValidDateFormat = (str) => {
-                                return /^\d{4}-\d{2}-\d{2}$/.test(str);
-                            };
-
                             let errorStr = ""
 
-
-                            if (formData.name === "" || formData.surname === "" || formData.date === "" || formData.phone === "") {
+                            if (formData.name === "" || formData.surname === "" || formData.role === "") {
                                 alert(t(strings.alert_msg));
-                            } else{
-                                if (allCourses.length !== 0) {
-                                    for (let c of allCourses) {
-                                        if (!isNumber(c.month_price)){
-                                            errorStr += "- Il prezzo deve essere un numero.\n"
-                                        }
-                                        if (isValidDateFormat(c.first_date) && isValidDateFormat(c.last_date)){
-                                            const date1 = new Date(c.first_date);
-                                            const date2 = new Date(c.last_date);
-                                            if (date1 > date2) {
-                                                errorStr += "La data di inizio è più avanti nel tempo della data di fine.\n"
-                                            }
-                                        } else {
-                                            errorStr += "- Le date devono essere nel formato AAAA-MM-GG.\n"
-                                        }
+                            } else {
+                                if (isNumber(formData.role)) {
+                                    const roleCheck = tutorRoles.find(r => r.id === Number(formData.role));
+                                    if (!roleCheck) {
+                                        const availableIds = tutorRoles.map(r => r.id).join(", ");
+                                        errorStr += `Il ruolo non esiste. Scegli tra: ${availableIds} \n`;
+                                    }
+
+                                } else {
+                                    errorStr += "Il ruolo deve essere un numero.\n"
+                                }
+
+                                for (let course of tutorCourses) {
+                                    if (!isNumber(course.price_per_hour)) {
+                                        errorStr += "I prezzi devono essere numeri.\n"
+                                        break
                                     }
                                 }
 
                                 if (errorStr !== "") {
-                                    alert(errorStr)
+                                    alert(errorStr);
                                 } else {
-                                    await updateStudent(student.stud_id, formData.name, formData.surname, formData.date, formData.phone);
-                                    for (let t of tutorsToAdd) {
-                                        await addTutorStudentRelation(student.stud_id, t.tutor_id)
+                                    await updateTutor(
+                                        formData.uid,
+                                        formData.name,
+                                        formData.surname,
+                                        Number(formData.role)
+                                    )
+
+
+                                    for (let s of studentsToAdd) {
+                                        await addTutorStudentRelation(s.stud_id, formData.uid)
+                                        console.log(s)
                                     }
 
-                                    for (let c of allCourses) {
+
+                                    for (let c of tutorCourses) {
+                                        console.log(c)
                                         if (c.hasOwnProperty("isNew")){
-                                            await addStudentCourseRelation(
+                                            await addTutorCourseRelation(
                                                 c.id_course,
-                                                student.stud_id,
-                                                c.month_price,
-                                                c.first_date,
-                                                c.last_date
+                                                formData.uid,
+                                                Number(c.price_per_hour)
                                             )
                                         } else {
-                                            await updateStudentCourseRelation(
+                                            await updateTutorCourseRelation(
                                                 c.id_course,
-                                                student.stud_id,
-                                                c.month_price,
-                                                c.first_date,
-                                                c.last_date
+                                                formData.uid,
+                                                Number(c.price_per_hour)
                                             )
                                         }
                                     }
 
                                     alert(strings.success)
                                     setIsOpen(false)
+                                    window.location.reload();
                                 }
                             }
                         }}
                     />
                 </div>
             </div>
+
         </div>
-    )
+    );
 }
 
-export default StudentInfoPage;
+export default TutorInfoPage;

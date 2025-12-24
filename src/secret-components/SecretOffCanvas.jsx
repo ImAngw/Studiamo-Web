@@ -7,6 +7,8 @@ import {ButtonWithText, ButtonWithIcon} from "../components/CustomButtons";
 import {WindowSizeContext} from "../context/Context";
 import menuIcon from '../assets/icons/dots.png'
 import {logout} from "../supabase/LogFunctions";
+import img from "../assets/logo/logo.jpg";
+import imAngIcon from "../assets/icons/imagw-logo.png";
 
 
 
@@ -39,6 +41,25 @@ function SecretOffCanvas() {
                 </Offcanvas.Header>
 
                 <Offcanvas.Body>
+
+                    <ButtonWithText
+                        action={() => {
+                            navigate(("/tutor_dashboard"))
+                            window.scrollTo(0, 0);
+                        }}
+                        text={strings.private}
+                    />
+                    <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
+
+                    <ButtonWithText
+                        action={() => {
+                            navigate(("/courses_page"))
+                            window.scrollTo(0, 0);
+                        }}
+                        text={strings.courses}
+                    />
+                    <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
+
                     <ButtonWithText
                         action={() => {
                             logout(navigate)
@@ -51,7 +72,22 @@ function SecretOffCanvas() {
 
                 </Offcanvas.Body>
 
+                <div
+                    style={{
+                        paddingTop: '10px',
+                        paddingBottom: '20px',
+                        display: 'flex',
+                        flexDirection: 'row',       // elementi affiancati
+                        justifyContent: 'center',   // centra orizzontalmente
+                        alignItems: 'center',       // centra verticalmente
+                        gap: '5px'                  // spazio tra testo e immagine
+                    }}
+                >
+                    <img src={imAngIcon} alt="Image" style={{ height: '50px', width: '50px' }} />
+                </div>
+
             </Offcanvas>
+
 
         </div>
     );

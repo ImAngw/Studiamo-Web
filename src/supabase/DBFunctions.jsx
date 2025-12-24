@@ -25,8 +25,31 @@ export function GetTutorProfile() {
 }
 
 
+export async function getTutorProfile() {
+    const { data, error } = await supabase.rpc('get_tutor_profile')
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data[0];
+}
+
+
 export async function GetFollowedStudents() {
     const { data, error } = await supabase.rpc('get_followed_students')
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+
+}
+
+
+export async function getFollowedCourses() {
+    const { data, error } = await supabase.rpc('get_tutor_courses')
 
     if (error) {
         alert(error.message)
@@ -69,6 +92,18 @@ export function GetLessonsTypes() {
     return types
 }
 
+export async function getLessonsTypes() {
+    const { data, error } = await supabase.rpc('get_lesson_types')
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+
+}
+
+
 export function GetLessonsFormats() {
     const [formats, setFormats] = useState(null)
 
@@ -91,6 +126,17 @@ export function GetLessonsFormats() {
 }
 
 
+export async function getLessonsFormats() {
+    const { data, error } = await supabase.rpc('get_lesson_formats')
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+
+}
+
 
 export async function getLessonsCount(start_date, stop_date) {
     const { data, error } = await supabase.rpc('get_lessons_count_in_range', {
@@ -106,7 +152,7 @@ export async function getLessonsCount(start_date, stop_date) {
 
 export async function getLessons(first_date, last_date) {
 
-    const { data, error } = await supabase.rpc('get_lessons_in_range', {
+    const { data, error } = await supabase.rpc('new_get_lessons_in_range', {
         start_date: first_date,
         stop_date: last_date
     })
@@ -119,6 +165,36 @@ export async function getLessons(first_date, last_date) {
 }
 
 
+export async function getCourseLessons(first_date, last_date) {
+
+    const { data, error } = await supabase.rpc('get_course_lessons', {
+        start_date: first_date,
+        stop_date: last_date
+    })
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getCourseStudents(course_id) {
+
+    const { data, error } = await supabase.rpc('get_students_in_course', {
+        course_id: course_id
+    })
+
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+
 export async function addNewLesson(
     date,
     hours,
@@ -129,7 +205,7 @@ export async function addNewLesson(
     student_list,
     already_processed
 ) {
-    const { data, error } = await supabase.rpc('insert_lesson_with_presences', {
+    const { data, error } = await supabase.rpc('new_insert_lesson_with_presences', {
         lesson_date: date,
         lesson_hours: hours,
         lesson_minutes: minutes,
@@ -150,6 +226,35 @@ export async function addNewLesson(
 
 
 
+export async function addNewCourseLesson(
+    lesson_date,
+    course_id,
+    lesson_hours,
+    lesson_minutes,
+    presences,
+    lesson_cost,
+    lesson_processed
+) {
+    const { data, error } = await supabase.rpc('insert_course_lesson_with_presences', {
+        lesson_date: lesson_date,
+        course_id: course_id,
+        lesson_hours: lesson_hours,
+        lesson_minutes: lesson_minutes,
+        presences: presences,
+        lesson_cost: lesson_cost,
+        lesson_processed: lesson_processed
+    });
+
+    if (error) {
+        alert(error.message);
+        return null;
+    }
+
+    return data[0];
+}
+
+
+
 
 export async function deleteLesson(old_lesson_id) {
     const { error } = await supabase.rpc('delete_lesson_with_presences', {
@@ -158,8 +263,18 @@ export async function deleteLesson(old_lesson_id) {
 
     if (error) {
         alert(error.message);
-    } else {
-        console.log('Lezione eliminata con successo');
+    }
+}
+
+
+
+export async function deleteCourseLesson(old_lesson_id) {
+    const { error } = await supabase.rpc('delete_course_lesson_with_presences', {
+        old_lesson_id
+    });
+
+    if (error) {
+        alert(error.message);
     }
 }
 

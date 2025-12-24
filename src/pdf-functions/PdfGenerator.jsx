@@ -95,14 +95,55 @@ export async function generateStudentReport(user, firstDate, lastDate, lessons) 
     return pdfMake.createPdf(docDefinition);
 }
 
-export async function generateTutorReport(tutor_name, tutor_surname, gain, lessons, students, firstDate, lastDate) {
+
+
+
+
+export async function generateStudentCourseReport(user, month, year) {
+    const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
+
+    const docDefinition = {
+        content: [
+            {
+                image: logoDataUrl,
+                width: 100,
+                alignment: 'center',
+                margin: [0, 0, 0, 20] // left, top, right, bottom
+            },
+            { text: 'Via Alcide De Gasperi 92, Mascalucia (CT). P.IVA: 06179280877', style: 'header', margin: [0, 0, 10, 0] },
+            { text: `Il costo per la partecipazione al corso ${user.c_name} da parte di ${user.name} ${user.surname}`, style: 'text', margin: [0, 30, 0, 0]},
+            { text: `nel mese ${month}/${year}  è di: ${user.bill} €`, style: 'text', margin: [0, 5, 0, 0]},
+            { text: `Coordinate bancarie:`, style: 'text', margin: [0, 30, 0, 0], bold:true},
+            { text: `Iban: IT36A0307502200CC8501138427`, style: 'text', margin: [0, 5, 0, 0]},
+            { text: `Intestato a STUDIAMO APS.`, style: 'text', margin: [0, 5, 0, 0]},
+            { text: `Banca Generali.`, style: 'text', margin: [0, 5, 0, 0]},
+            { text: `Indicare il nome dello studente nella causale.`, style: 'text', margin: [0, 5, 0, 0]},
+
+            { text: `Per maggiori informazioni contattaci al numero:`, style: 'text', margin: [0, 20, 0, 0], bold:true},
+            { text: `Segreteria Studiamo APS: 389 249 4117`, style: 'text', margin: [0, 5, 0, 0]},
+        ],
+        styles: {
+            header: { fontSize: 10, bold: true, alignment: 'center' },
+            text: { fontSize: 12 },
+        },
+    };
+
+    return pdfMake.createPdf(docDefinition);
+}
+
+
+
+
+
+
+
+export async function generateTutorReport(tutor_name, tutor_surname, gain, lessons, courseLessons, students, firstDate, lastDate) {
     const logoDataUrl = await getBase64ImageFromUrl('https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/logo.png');
     const [f_year, f_month, f_day] = firstDate.split("-");
     const f_formatted = `${f_day}-${f_month}-${f_year}`;
 
     const [l_year, l_month, l_day] = lastDate.split("-");
     const l_formatted = `${l_day}-${l_month}-${l_year}`;
-
 
 
     const tableBody = [
@@ -117,8 +158,17 @@ export async function generateTutorReport(tutor_name, tutor_surname, gain, lesso
             { text: lesson.lesson_date, alignment: 'center', margin: [0, 5, 0, 5] },
             { text: students[index], alignment: 'center', margin: [0, 5, 0, 5] },
             { text: lesson.lesson_hours + "h " + lesson.lesson_minutes + "min", alignment: 'center', margin: [0, 5, 0, 5] }
+        ]),
+
+        // Righe dinamiche
+        ...courseLessons.map((lesson, index) => [
+            { text: lesson.l_date, alignment: 'center', margin: [0, 5, 0, 5] },
+            { text: lesson.course_name, alignment: 'center', margin: [0, 5, 0, 5] },
+            { text: lesson.l_hours + "h " + lesson.l_minutes + "min", alignment: 'center', margin: [0, 5, 0, 5] }
         ])
     ];
+
+    console.log(tableBody.length);
 
     const docDefinition = {
         content: [
@@ -130,6 +180,7 @@ export async function generateTutorReport(tutor_name, tutor_surname, gain, lesso
             },
             { text: 'Via Alcide De Gasperi 92, Mascalucia (CT). P.IVA: 06179280877', style: 'header', margin: [0, 0, 10, 0] },
             { text: `Si riportano le lezioni svolte da ${tutor_name} ${tutor_surname} dal ${f_formatted} al ${l_formatted}`, style: 'text', margin: [0, 30, 0, 0]},
+
             {
                 table: {
                     headerRows: 1,

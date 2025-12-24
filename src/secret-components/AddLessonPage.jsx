@@ -253,9 +253,11 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
                     borderRadius: "10px",
                     padding: "20px",
                     width: "95%",
+                    maxWidth: "400px",
                     position: "relative",
                     maxHeight: "90vh", // 👈 limita l’altezza
                     overflowY: "auto", // 👈 scroll solo dentro la "nuvoletta"
+
                 }}
             >
                 <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20}}>

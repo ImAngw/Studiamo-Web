@@ -7,6 +7,8 @@ import {ButtonWithText, ButtonWithIcon} from "../components/CustomButtons";
 import {WindowSizeContext} from "../context/Context";
 import menuIcon from '../assets/icons/dots.png'
 import {logout} from "../supabase/LogFunctions";
+import img from "../assets/logo/logo.jpg";
+import imAngIcon from "../assets/icons/imagw-logo.png";
 
 
 
@@ -40,14 +42,27 @@ function SecretOffCanvas() {
 
                 <Offcanvas.Body>
                     <ButtonWithText
-                        action={() => {navigate(("/admin_tutor_page"))}}
+                        action={() => {navigate(("/admin_home"))}}
                         text={strings.general}
+                    />
+                    <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
+
+                    <ButtonWithText
+                        action={() => {navigate(("/admin_tutor_page"))}}
+                        text={strings.tutor}
                     />
                     <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
 
                     <ButtonWithText
                         action={() => {navigate(("/students_page"))}}
                         text={strings.students}
+                    />
+                    <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
+
+
+                    <ButtonWithText
+                        action={() => {navigate(("/admin_course_page"))}}
+                        text={strings.courses}
                     />
                     <hr style={{margin: "5px 0", borderColor: "#ccc"}}/>
 
@@ -63,6 +78,21 @@ function SecretOffCanvas() {
 
 
                 </Offcanvas.Body>
+
+
+                <div
+                    style={{
+                        paddingTop: '10px',
+                        paddingBottom: '20px',
+                        display: 'flex',
+                        flexDirection: 'row',       // elementi affiancati
+                        justifyContent: 'center',   // centra orizzontalmente
+                        alignItems: 'center',       // centra verticalmente
+                        gap: '5px'                  // spazio tra testo e immagine
+                    }}
+                >
+                    <img src={imAngIcon} alt="Image" style={{ height: '50px', width: '50px' }} />
+                </div>
 
             </Offcanvas>
 

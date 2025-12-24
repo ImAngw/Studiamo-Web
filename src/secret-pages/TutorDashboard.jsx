@@ -1,13 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import SecretHeader from "../secret-components/SecretHeader";
 import MyStudents from "../secret-components/MyStudents";
 import MyLessons from "../secret-components/MyLessons";
 
-import {GetTutorProfile, GetFollowedStudents, GetLessonsTypes, GetLessonsFormats} from "../supabase/DBFunctions";
+import {useUserData} from "../provider/AppDataContext";
+import {useTutorData} from "../provider/AppTutorContext";
+
+
 
 
 function TutorDashboard() {
-    const profile = GetTutorProfile()
+    const {profile} = useUserData()
+    const {students, lessonTypes, lessonFormats} = useTutorData()
+
+    /*
     const [students, setStudents] = useState([])
     const lessonsTypes = GetLessonsTypes()
     const lessonFormats = GetLessonsFormats()
@@ -20,8 +26,7 @@ function TutorDashboard() {
         }
         fetchStuds();
     }, [])
-
-
+     */
 
     return (
         <div>
@@ -30,12 +35,13 @@ function TutorDashboard() {
                     <SecretHeader
                         name={profile.tutor_name}
                         surname={profile.tutor_surname}
+                        pageName={"TutorDash"}
                     />
 
                     <MyStudents studentsList={students}/>
                     <MyLessons
                         studentsList={students}
-                        lessonTypes={lessonsTypes}
+                        lessonTypes={lessonTypes}
                         lessonFormats={lessonFormats}
                     />
                 </div>

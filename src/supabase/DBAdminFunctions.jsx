@@ -4,7 +4,8 @@ import {supabase} from "./supabaseClient";
 
 
 export async function getGeneralCounts(first_date, last_date) {
-    const { data, error } = await supabase.rpc('make_general_counts', {
+    // new_make_general_counts, make_general_counts
+    const { data, error } = await supabase.rpc('new_make_general_counts', {
         first_date: first_date,
         last_date: last_date
     })
@@ -19,7 +20,8 @@ export async function getGeneralCounts(first_date, last_date) {
 
 
 export async function getActiveTutors(select_only_not_processed, first_date, last_date, my_offset) {
-    const { data, error } = await supabase.rpc('get_active_tutors', {
+    // new_get_active_tutors, get_active_tutors
+    const { data, error } = await supabase.rpc('new_get_active_tutors', {
         select_only_not_processed: select_only_not_processed,
         first_date: first_date,
         last_date: last_date,
@@ -36,7 +38,8 @@ export async function getActiveTutors(select_only_not_processed, first_date, las
 
 
 export async function getActiveStudents(select_only_not_processed, start_date, stop_date, my_offset) {
-    const { data, error } = await supabase.rpc('get_active_students', {
+    // new_get_active_students, get_active_students
+    const { data, error } = await supabase.rpc('new_get_active_students', {
         select_only_not_processed: select_only_not_processed,
         start_date: start_date,
         stop_date: stop_date,
@@ -121,7 +124,8 @@ export async function getActiveStudentsCount(select_only_not_processed, start_da
 }
 
 export async function getActiveTutorsCount(select_only_not_processed, first_date, last_date) {
-    const { data, error } = await supabase.rpc('get_active_tutors_count', {
+    // new_get_active_tutors_count, get_active_tutors_count
+    const { data, error } = await supabase.rpc('new_get_active_tutors_count', {
         select_only_not_processed: select_only_not_processed,
         first_date: first_date,
         last_date: last_date
@@ -190,6 +194,20 @@ export async function updateStudent(student_id, student_name, student_surname, s
         student_surname: student_surname,
         student_date: student_date,
         student_phone: student_phone
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
+
+export async function updateTutor(tutor_id, tutor_name, tutor_surname, tutor_role) {
+    const { error } = await supabase.rpc('update_tutor', {
+        tutor_id: tutor_id,
+        tutor_name: tutor_name,
+        tutor_surname: tutor_surname,
+        tutor_role: tutor_role
     })
     if (error) {
         alert(error.message)
@@ -293,3 +311,270 @@ export async function cleanPDF() {
 
     return data;
 }
+
+
+export async function getAllCourses() {
+    const { data, error } = await supabase.rpc('get_all_courses')
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getStudentCourses(student_id) {
+    const { data, error } = await supabase.rpc('get_courses_of_the_student', {
+        student_id: student_id
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+export async function getStudentOfTheCourses(course_id, selected_month, selected_year) {
+    const { data, error } = await supabase.rpc('get_students_of_the_course', {
+        course_id: course_id,
+        selected_month: selected_month,
+        selected_year: selected_year
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getTutorOfTheCourses(course_id) {
+    const { data, error } = await supabase.rpc('get_tutors_of_the_course', {
+        course_id: course_id
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getAllTutorInDB(my_offset) {
+    const { data, error } = await supabase.rpc('get_all_tutors_in_db', {
+        my_offset: my_offset
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+export async function getAllTutorCountDB() {
+    const { data, error } = await supabase.rpc('get_total_tutors_count')
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+export async function getTutorCourse(tutor_id) {
+    const { data, error } = await supabase.rpc('get_courses_of_the_tutor', {
+        tutor_id: tutor_id
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getTutorRoles() {
+    const { data, error } = await supabase.rpc('get_tutor_roles')
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+
+
+
+export async function addStudentCourseRelation(course_id, stud_id, price, f_date, l_date) {
+    const { error } = await supabase.rpc('insert_student_course_relation', {
+        course_id: course_id,
+        stud_id: stud_id,
+        price: price,
+        f_date: f_date,
+        l_date: l_date
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+export async function removeStudentCourseRelation(course_id, stud_id) {
+    const { error } = await supabase.rpc('remove_student_course_relation', {
+        course_id: course_id,
+        stud_id: stud_id
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+export async function updateStudentCourseRelation(course_id, stud_id, price, f_date, l_date) {
+    const { error } = await supabase.rpc('update_student_course_relation', {
+        course_id: course_id,
+        stud_id: stud_id,
+        price: price,
+        f_date: f_date,
+        l_date: l_date
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
+
+
+
+export async function addTutorCourseRelation(course_id, tutor_id, price) {
+    const { error } = await supabase.rpc('insert_tutor_course_relation', {
+        course_id: course_id,
+        tutor_id: tutor_id,
+        price: price
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+export async function removeTutorCourseRelation(course_id, tutor_id) {
+    const { error } = await supabase.rpc('remove_tutor_course_relation', {
+        course_id: course_id,
+        tutor_id: tutor_id
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+export async function updateTutorCourseRelation(course_id, tutor_id, price) {
+    const { error } = await supabase.rpc('update_tutor_course_relation', {
+        course_id: course_id,
+        tutor_id: tutor_id,
+        price: price
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
+
+
+
+export async function addStudentMonthResume(course_id, studen_id, selected_month, selected_year, price) {
+    const { error } = await supabase.rpc('insert_student_month_resume', {
+        course_id: course_id,
+        studen_id: studen_id,
+        selected_month: selected_month,
+        selected_year: selected_year,
+        price: price
+
+
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
+export async function getCourseCounts(selected_month, selected_year) {
+    const { data, error } = await supabase.rpc('get_total_course_quote_and_gain', {
+        selected_month: selected_month,
+        selected_year: selected_year
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data[0];
+}
+
+
+export async function getCourseHoursAndCosts(first_date, last_date) {
+    const { data, error } = await supabase.rpc('get_total_course_hours_and_costs', {
+        first_date: first_date,
+        last_date: last_date
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data[0];
+}
+
+
+
+export async function getCourseNStuds(selected_month, selected_year) {
+    const { data, error } = await supabase.rpc('get_total_course_n_stud', {
+        selected_month: selected_month,
+        selected_year: selected_year
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data[0];
+}
+
+
+export async function getCourseNSTutors(first_date, last_date) {
+    const { data, error } = await supabase.rpc('get_total_course_n_tutor', {
+        first_date: first_date,
+        last_date: last_date
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data[0];
+}
+
+
+export async function getCourseLessonsForTutor(t_id, first_date, last_date) {
+    const { data, error } = await supabase.rpc('get_tutor_course_lessons_info', {
+        t_id: t_id,
+        first_date: first_date,
+        last_date: last_date
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+
+export async function getCourseStudentInfo(selected_month, selected_year, my_offset) {
+    const { data, error } = await supabase.rpc('get_student_course_resume_info', {
+        selected_month: selected_month,
+        selected_year: selected_year,
+        my_offset: my_offset
+    })
+    if (error) {
+        alert(error.message)
+        return null;
+    }
+    return data;
+}
+
+

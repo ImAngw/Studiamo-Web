@@ -1,103 +1,62 @@
 import React, {useEffect, useState} from "react";
 import { useTranslation } from 'react-i18next';
 import SecretDropDown from "./SecretDropDown";
-import {getLessons, deleteLesson} from "../supabase/DBFunctions";
+import {deleteCourseLesson} from "../supabase/DBFunctions";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import delIcon from '../assets/icons/delete.png'
 import plusIcon from '../assets/icons/plus.png'
-import StudentsDropDown from "./StudentsDropDown";
-import CountsWafer from "./CountsWafer";
-import AddLessonPage from "./AddLessonPage";
-import {useLessonsData} from "../provider/AppTutorContext";
-
+import StudentCourseDropDown from "./StudentCourseDropDown";
+import {useCourseLessonsData} from "../provider/AppTutorContext";
+import AddCourseLessonPage from "./AddCourseLessonPage";
+import CourseCountsWafer from "./CourseCountsWafer";
 
 
 
 function makeCounts(lessons) {
 
     let bill = 0.
-    let private_hours = 0
-    let private_minutes = 0
-    let group_hours = 0
-    let group_minutes = 0
+    let hours = 0
+    let minutes = 0
 
     for (const lesson of lessons ?? []) {
         const price = lesson.lesson_cost
-        const n_students = lesson.student_list.length
-        const hours = lesson.lesson_hours
-        const min = lesson.lesson_minutes
+        const h = lesson.n_hours
+        const min = lesson.n_minutes
 
-        const total_time = hours + min / 60.
-
-        bill += price * total_time
-        if (n_students === 1) {
-            private_hours += hours
-            private_minutes += min
-        } else {
-            group_hours += hours
-            group_minutes += min
-        }
+        hours += h
+        minutes += min
+        bill += price
     }
 
-    if (private_minutes >= 60) {
-        const new_hours = Math.trunc(private_minutes / 60)
-        const new_min = private_minutes % 60
-        private_hours += new_hours
-        private_minutes = new_min
+    if (minutes >= 60) {
+        const new_hours = Math.trunc(minutes / 60)
+        const new_min = minutes % 60
+        hours += new_hours
+        minutes = new_min
     }
 
-    if (group_minutes >= 60) {
-        const new_hours = Math.trunc(group_minutes / 60)
-        const new_min = group_minutes % 60
-        group_hours += new_hours
-        group_minutes = new_min
-    }
-
-
-    return {
-        bill,
-        private_hours,
-        private_minutes,
-        group_hours,
-        group_minutes
-    }
+    return {bill: bill, hours: hours, minutes: minutes}
 }
 
 
 
-function MyLessons({studentsList, lessonTypes, lessonFormats}) {
+
+
+function MyCourseLessons({ courseList }) {
     const { t } = useTranslation();
-    const strings = t("MyLessons", { returnObjects: true });
+    const strings = t("MyCourseLessons", { returnObjects: true });
 
     const today = new Date();
     const allowedYears = [today.getFullYear(), today.getFullYear() - 1]
     const allowedMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
     const [isOpen, setIsOpen] = useState(false);
-
-
-    const {currentMonth, setCurrentMonth, currentYear, setCurrentYear, allLessons, setAllLessons} = useLessonsData()
-
-    /*
-    const [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
-    const [currentYear, setCurrentYear] = useState(today.getFullYear());
-    const firstData = formatDate(currentYear, currentMonth, 1);
-    let lastData = new Date(currentYear, currentMonth, 0);
-    lastData = formatDate(lastData.getFullYear(), lastData.getMonth() + 1, lastData.getDate());
-
-
-    useEffect(() => {
-        async function fetchLessons() {
-            const lessons = await getLessons(firstData, lastData)
-            setAllLessons(lessons)
-        }
-        fetchLessons();
-    }, [firstData, lastData])
-     */
-
+    const {currentMonth, setCurrentMonth, currentYear, setCurrentYear, allLessons, setAllLessons} = useCourseLessonsData()
 
 
     const counts = makeCounts(allLessons)
+
+
     return (
         <div style={{padding:20}}>
             <div>
@@ -105,13 +64,12 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
                     <h1 className={'title-font'} style={{fontSize:40, margin: 0}}>{strings.title}</h1>
                     <ButtonWithIcon icon={plusIcon} action={() => ( setIsOpen(true))} />
                     {isOpen && (
-                        <AddLessonPage
+                        <AddCourseLessonPage
                             setIsOpen={setIsOpen}
-                            lessonTypes={lessonTypes}
-                            lessonFormats={lessonFormats}
-                            students={studentsList}
                             setAllLessons={setAllLessons}
+                            courseList={courseList}
                         />)}
+
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent:'center', gap:'30px'}}>
                     <SecretDropDown options={allowedYears} defaultValue={currentYear} setDefaultValue={setCurrentYear}/>
@@ -135,10 +93,9 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
                         <tr>
                             <th className={'title-font'} style={{fontSize: '20px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.data}</th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.course}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'45px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'45px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'85px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.mod}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.type}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'120px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.students}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
 
@@ -148,42 +105,43 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
                         {allLessons && (allLessons.map((lesson, index) => (
                             <tr key={index}>
                                 <td className={'main-font'} style={{fontSize: '11px'}}>{index + 1}</td>
-                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_date}</td>
-                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_hours}</td>
-                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_minutes}</td>
-                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_mod}</td>
-                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.lesson_type}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.day}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{courseList.find(c => c.id_course === lesson.course_id)?.name || ""}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.n_hours}</td>
+                                <td className={'main-font'} style={{fontSize: '11px'}}>{lesson.n_minutes}</td>
+
+
                                 <td className={'main-font'} style={{fontSize: '11px', textAlign: 'left'}}>
-                                    <StudentsDropDown students={Object.values(lesson.student_list)} studentsList={studentsList}/>
+                                    <StudentCourseDropDown studentsList={lesson.student_list}/>
                                 </td>
 
                                 <td style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                    {lesson.lesson_state ? (
+                                    {lesson.is_processed ? (
                                         <div style={{ minHeight: '40px' }}></div>
                                     ) : (
                                         <ButtonWithIcon
                                             icon={delIcon}
                                             action={() => {
-
-                                                deleteLesson(lesson.lesson_id)
-                                                setAllLessons(prev => prev.filter(l => l.lesson_id !== lesson.lesson_id))
+                                                deleteCourseLesson(lesson.l_id)
+                                                setAllLessons(prev => prev.filter(l => l.l_id !== lesson.l_id))
                                                 alert(strings.delete_success)
                                             }}
                                         />
                                     )}
                                 </td>
+
                             </tr>)
                         ))}
                         </tbody>
                     </table>
                 </div>
-            </div>
 
-            <div>
-                <CountsWafer counts={counts}/>
+                <div style={{paddingTop:20}}>
+                    <CourseCountsWafer counts={counts}/>
+                </div>
             </div>
         </div>
     );
 }
 
-export default MyLessons;
+export default MyCourseLessons;

@@ -3,14 +3,13 @@ import { useTranslation } from 'react-i18next';
 import {ButtonWithIcon} from "../components/CustomButtons";
 import downloadIcon from '../assets/icons/download.png'
 import {generateAllTutorReport, generateTutorReport} from "../pdf-functions/PdfGenerator";
-import {getLessonsForTutor, getFollowedStudentsAdmin} from "../supabase/DBAdminFunctions";
+import {getLessonsForTutor, getFollowedStudentsAdmin, getCourseLessonsForTutor} from "../supabase/DBAdminFunctions";
 
 
 
-function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, setTutorOffset, totPages}) {
+function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, setTutorOffset, totPages, currentPage, setCurrentPage}) {
     const { t } = useTranslation();
     const strings = t("TutorTableCounts", { returnObjects: true });
-    const [currentPage, setCurrentPage] = useState(1);
 
     return (
         <div>
@@ -53,8 +52,10 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.level}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.course_hours}</th>
+                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.c_minutes}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.gain} €</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Download</th>
 
@@ -69,6 +70,8 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.tutor_level}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_hours}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_minutes}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_course_hours}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_course_minutes}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_cost}</td>
                                 <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                                     {allowedCounts && (
@@ -77,6 +80,8 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                                             action={async () => {
                                                 let lessons = await getLessonsForTutor(tutor.t_id, false, firstData, lastData);
                                                 const students = await getFollowedStudentsAdmin(tutor.t_id);
+
+                                                let courseLessons = await getCourseLessonsForTutor(tutor.t_id, firstData, lastData);
 
                                                 const studNames = lessons.map(lesson => {
                                                     const studentAtLesson = lesson.student_list;
@@ -91,7 +96,7 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                                                     return "Studente non trovato"
                                                 })
 
-                                                const pdfDoc = await generateTutorReport(tutor.tutor_name, tutor.tutorn_surname, tutor.total_cost, lessons, studNames, firstData, lastData);
+                                                const pdfDoc = await generateTutorReport(tutor.tutor_name, tutor.tutorn_surname, tutor.total_cost, lessons, courseLessons, studNames, firstData, lastData);
                                                 pdfDoc.download(`Resoconto di ${tutor.tutorn_surname} ${tutor.tutor_name} dal ${firstData} al ${lastData}`)
                                             }}
                                         />

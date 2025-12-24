@@ -1,38 +1,25 @@
-import React, {useState} from "react";
+import React from "react";
 import {useTranslation} from 'react-i18next';
 import {ButtonWithIcon} from "../components/CustomButtons";
 import wIcon from '../assets/icons/b-w-whatsapp.png'
 import downloadIcon from '../assets/icons/download.png'
-import {generateStudentReport, generateAllStudentReport} from "../pdf-functions/PdfGenerator";
-import {getLessonsForStudents, uploadPDF} from "../supabase/DBAdminFunctions";
+import {generateStudentCourseReport} from "../pdf-functions/PdfGenerator";
+import {uploadPDF} from "../supabase/DBAdminFunctions";
+import {useAdminData} from "../provider/AppAdminContext";
 
 
 
-function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts, setStudOffset, totPages, currentPage, setCurrentPage}) {
+function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts}) {
     const { t } = useTranslation();
     const strings = t("StudentTableCounts", { returnObjects: true });
     // const [currentPage, setCurrentPage] = useState(currPage);
 
+    const {setCourseStudOffset, totalStudCoursePages, studCourseCurrentPage, setStudCourseCurrentPage} = useAdminData()
+
     return (
         <div>
             <div style={{paddingTop:10, display: 'flex', flexDirection:'row', alignItems:'center', gap:50}}>
-                <h1 className={'title-font'}> {strings.active_students}</h1>
-                <ButtonWithIcon
-                    icon={downloadIcon}
-                    action={async () => {
-                        const users = activeStudents.map(student => {
-                            return {
-                                name: student.stud_name,
-                                surname: student.stud_surname,
-                                hours: student.total_hours,
-                                minutes: student.total_minutes,
-                                bill: student.total_cost
-                            }
-                        });
-                        const pdfDoc = await generateAllStudentReport(users, firstData, lastData);
-                        pdfDoc.download(`Resoconto Studenti dal ${firstData} al ${lastData}`)
-                    }}
-                />
+                <h1 className={'title-font'}> {strings.course_active_students}</h1>
             </div>
             <div style={{padding:20}}>
                 <div
@@ -52,8 +39,6 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                             <th className={'title-font'} style={{fontSize: '10px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.bill} €</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Invia</th>
                             <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Download</th>
@@ -64,11 +49,9 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                         {activeStudents && (activeStudents.map((student, index) => (
                             <tr key={index}>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.stud_surname}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.stud_name}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_hours}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_minutes}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_cost}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.s_surname}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.s_name}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.course_price}</td>
                                 <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                                     {allowedCounts && (
                                         <ButtonWithIcon
@@ -76,15 +59,14 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                                             action={async () => {
                                                 const win = window.open('', '_blank'); // apri subito la finestra
                                                 try {
-                                                    const user = { name: student.stud_name, surname: student.stud_surname, bill: student.total_cost };
-                                                    const lessons = await getLessonsForStudents(student.stud_id, false, firstData, lastData);
-                                                    const pdfDoc = await generateStudentReport(user, firstData, lastData, lessons);
-                                                    const pdfURL = await uploadPDF(pdfDoc, `Resoconto ${student.stud_surname} ${student.stud_name} dal ${firstData} al ${lastData}`);
+                                                    const user = { name: student.s_name, surname: student.s_surname, bill: student.course_price, c_name: student.course_name};
+                                                    const pdfDoc = await generateStudentCourseReport(user, month, year);
+                                                    const pdfURL = await uploadPDF(pdfDoc, `Resoconto ${student.s_surname} ${student.s_name} del ${month}_${year}`);
 
                                                     if (!pdfURL) throw new Error('Upload fallito');
 
-                                                    const phone = student.telephone;
-                                                    const message = `Studiamo APS\n\nEcco il resoconto delle lezioni di ${student.stud_surname} ${student.stud_name} relativo al periodo che va dal ${firstData} al ${lastData}.\n\nPuoi scaricare il tuo resoconto qui:\n\n ${pdfURL}`;
+                                                    const phone = student.s_phone;
+                                                    const message = `Studiamo APS\n\nEcco il resoconto dei corsi di ${student.s_surname} ${student.s_name} del ${month}/${year}.\n\nPuoi scaricare il tuo resoconto qui:\n\n ${pdfURL}`;
                                                     const encodedMessage = encodeURIComponent(message);
                                                     win.location.href = `https://wa.me/${phone}?text=${encodedMessage}`; // aggiorna la finestra aperta
                                                 } catch (err) {
@@ -103,10 +85,9 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                                         <ButtonWithIcon
                                             icon={downloadIcon}
                                             action={async () => {
-                                                const user = { name: student.stud_name, surname: student.stud_surname, bill: student.total_cost };
-                                                const lessons = await getLessonsForStudents(student.stud_id, false, firstData, lastData);
-                                                const pdfDoc = await generateStudentReport(user, firstData, lastData, lessons);
-                                                pdfDoc.download(`Resoconto ${student.stud_surname} ${student.stud_name} dal ${firstData} al ${lastData}`)
+                                                const user = { name: student.s_name, surname: student.s_surname, bill: student.course_price, c_name: student.course_name};
+                                                const pdfDoc = await generateStudentCourseReport(user, month, year);
+                                                pdfDoc.download(`Resoconto ${student.s_name} ${student.s_surname} del ${month}_${year}`)
                                             }}
                                         />
                                     )}
@@ -124,10 +105,10 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 10 }}>
 
                 <button
-                    disabled={currentPage === 1}
+                    disabled={studCourseCurrentPage === 1}
                     onClick={() => {
-                        setCurrentPage(currentPage - 1);
-                        setStudOffset(prevOffset => prevOffset - 1);
+                        setStudCourseCurrentPage(studCourseCurrentPage - 1);
+                        setCourseStudOffset(prevOffset => prevOffset - 1);
                     }}
                     style={{ borderRadius:10 }}
                 >
@@ -135,14 +116,14 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                 </button>
 
                 <span style={{ margin: '0 10px', fontSize:22 }} className={'main-font'}>
-                        Pagina {currentPage} di {totPages}
+                        Pagina {studCourseCurrentPage} di {totalStudCoursePages}
                     </span>
 
                 <button
-                    disabled={currentPage === totPages}
+                    disabled={studCourseCurrentPage === totalStudCoursePages}
                     onClick={() => {
-                        setCurrentPage(currentPage + 1);
-                        setStudOffset(prevOffset => prevOffset + 1);
+                        setStudCourseCurrentPage(studCourseCurrentPage + 1);
+                        setCourseStudOffset(prevOffset => prevOffset + 1);
                     }}
                     style={{ borderRadius:10 }}
                 >
@@ -152,9 +133,7 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
 
             <div style={{padding:30}}/>
         </div>
-
-
     );
 }
 
-export default StudentsTableCounts;
+export default CourseStudentsTableCounts;

@@ -6,15 +6,15 @@ import SecretOffCanvas from "./SecretOffCanvas";
 
 
 
-function SecretHeader({ name, surname}) {
+function SecretHeader({ name, surname, pageName}) {
     const { width, height } = useContext(WindowSizeContext);
     const { t } = useTranslation();
-    const strings = t("TutorDash", { returnObjects: true });
+    const strings = t(pageName, { returnObjects: true });
 
     return (
         <div
             style={{height: 80, width: width, display: 'flex', alignItems: 'center'}}
-            className={'dashboard-navbar'}
+            className={pageName === "CoursesPage" ? 'dashboard-navbar-course' : 'dashboard-navbar'}
         >
             <div style={{height: '90%', width: '100%', display: 'flex', flexDirection:'column',}}>
                 <h1 className={'title-font'} style={{fontSize: '35px'}}>{strings.title}</h1>

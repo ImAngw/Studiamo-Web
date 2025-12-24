@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import TutorTableCounts from "../admin-components/TutorTableCounts";
 import StudentsTableCounts from "../admin-components/StudentstableCount";
 import GeneralTableCounts from "../admin-components/GeneralTableCounts";
+import CourseStudentsTableCounts from "../admin-components/CourseStudentsTableCount";
 
 import AdminHeader from "../admin-components/AdminHeader";
 import {useTranslation} from "react-i18next";
@@ -9,8 +10,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import SecretDropDown from "../secret-components/SecretDropDown";
 import {ButtonWithIcon} from "../components/CustomButtons";
 import goIcon from "../assets/icons/lets-go.png";
-import {getActiveTutors, getActiveStudents, getGeneralCounts, getActiveStudentsCount, getActiveTutorsCount} from "../supabase/DBAdminFunctions";
-import {GetTutorProfile} from "../supabase/DBFunctions";
+import {useAdminData, useAdminProfileData} from "../provider/AppAdminContext";
 
 
 function formatDate(year, month, day) {
@@ -34,8 +34,9 @@ function daysCheck(firstDay, lastDay, strings, allowedDays) {
 }
 
 
+/*
 function AdminTutorPage() {
-    const profile = GetTutorProfile()
+    const profile = useAdminProfileData()
     const { t } = useTranslation();
     const strings = t("AdminTutor", { returnObjects: true });
 
@@ -81,9 +82,6 @@ function AdminTutorPage() {
         }
         fetchActiveTutors()
     }, [pushButton, tutorOffset])
-
-
-
 
 
 
@@ -241,5 +239,216 @@ function AdminTutorPage() {
     );
 }
 
-export default AdminTutorPage;
+ */
+
+
+function AdminHome() {
+    const {profile} = useAdminProfileData()
+    const {firstDate, setFirstDate, lastDate, setLastDate} = useAdminData()
+    const {totalTutorPages, activeTutors, setTutorOffset, tutorCurrentPage, setTutorCurrentPage} = useAdminData()
+    const {totalStudPages, activeStudents, setStudOffset, studCurrentPage, setStudCurrentPage} = useAdminData()
+    const {generalCounts, courseCounts, nCourseTutors, nActiveTutorCourses, nActiveStudCourses, activeCourseStudents} = useAdminData()
+
+
+    const [fYear, fMonth, fDay] = firstDate?.split("-");
+    const [lYear, lMonth, lDay] = lastDate?.split("-");
+
+    const { t } = useTranslation();
+    const strings = t("AdminTutor", { returnObjects: true });
+
+    const today = new Date();
+
+    const allowedYears = [today.getFullYear(), today.getFullYear() - 1]
+    const allowedMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+    const [firstDay, setFirstDay] = useState(Number(fDay));
+    const [lastDay, setLastDay] = useState(Number(lDay));
+    const [currentMonth, setCurrentMonth] = useState(Number(fMonth));
+    const [currentYear, setCurrentYear] = useState(Number(fYear));
+
+
+    const lastAllowedDay = (today.getMonth() + 1 === currentMonth && today.getFullYear() === currentYear) ?
+        today.getDate() - 1 : new Date(currentYear, currentMonth, 0).getDate();
+
+
+    const daysL = Array.from({ length: lastAllowedDay}, (_, i) => i + 1)
+    const daysF = Array.from({ length: lastDay - 1 !== 0 ? lastDay - 1 : 1}, (_, i) => i + 1)
+
+    const [pushButton, setPushButton] = useState(false)
+    const [isFirstRun, setIsFirstRun] = useState(true)
+
+
+    useEffect(() => {
+        if (pushButton) {
+            if (firstDay <= lastDay) {
+                setFirstDate(formatDate(currentYear, currentMonth, firstDay))
+                setLastDate(formatDate(currentYear, currentMonth, lastDay))
+                setPushButton(false)
+            } else {
+                alert("lastDay must be greater than firstDay")
+            }
+        }
+    }, [firstDay, lastDay, currentMonth, currentYear, pushButton])
+
+
+    useEffect(() => {
+        if (!isFirstRun) {
+            setFirstDay(1);
+            if (today.getMonth() + 1 === currentMonth && today.getFullYear() === currentYear) {
+                setLastDay(today.getDate() - 1);
+            } else {
+                setLastDay(new Date(currentYear, currentMonth, 0).getDate());
+            }
+        } else {
+            setIsFirstRun(false)
+        }
+    }, [currentMonth, currentYear])
+
+
+
+
+
+    return (
+        <div>
+            {profile && (
+                <div>
+                    <AdminHeader
+                        name={profile.tutor_name}
+                        surname={profile.tutor_surname}
+                    />
+
+                    <h1 className={'title-font'} style={{paddingTop:10}}> {strings.title}:</h1>
+                    <div style={{padding:20, border: '1px solid #ccc', borderRadius: '8px', boxShadow: '0 0  rgba(0, 0, 0, 0.1)', width:'90%', margin: '20px  auto'}}>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent:'center', gap:'10px'}}>
+                            <p style={{ display: 'inline', margin: 0, paddingRight:10, paddingLeft:10 }} className={'main-font'}><b>{strings.lessons_from}: </b></p>
+                            <Dropdown>
+                                <Dropdown.Toggle style={{
+                                    backgroundColor: 'transparent',  // nessun colore di sfondo
+                                    border: '1px solid black',     // bordo verde (o quello che vuoi)
+                                    color: 'black',                // testo verde per coerenza
+                                    boxShadow: 'none',                // rimuove l’ombra del focus
+                                    width:'50px',
+                                }}>
+                                    <p style={{ display: 'inline', margin: 0, paddingRight:0 }}>{firstDay}</p>
+
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{
+                                    minWidth: '100px',   // larghezza minima
+                                    maxHeight: '200px',  // altezza massima
+                                    overflowY: 'auto',   // scroll se troppi elementi
+                                }}>
+                                    {daysF.map((day, index) => (
+                                        index === daysF.length - 1 ? (
+                                            <Dropdown.Item
+                                                key={index}
+                                                onClick={() => {setFirstDay(day)}
+                                                }>
+                                                {day}
+                                            </Dropdown.Item>
+
+                                        ) : (
+                                            <div key={index}>
+                                                <Dropdown.Item onClick={() => {setFirstDay(day)}}>{day}</Dropdown.Item>
+                                                <Dropdown.Divider />
+                                            </div>
+                                        )
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <p style={{ display: 'inline', margin: 0, paddingRight:10, paddingLeft:30 }} className={'main-font'}><b>{strings.lessons_to}: </b></p>
+                            <Dropdown>
+                                <Dropdown.Toggle style={{
+                                    backgroundColor: 'transparent',  // nessun colore di sfondo
+                                    border: '1px solid black',     // bordo verde (o quello che vuoi)
+                                    color: 'black',                // testo verde per coerenza
+                                    boxShadow: 'none',                // rimuove l’ombra del focus
+                                    width:'50px',
+                                }}>
+                                    <p style={{ display: 'inline', margin: 0, paddingRight:0 }}>{lastDay}</p>
+
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{
+                                    minWidth: '100px',   // larghezza minima
+                                    maxHeight: '200px',  // altezza massima
+                                    overflowY: 'auto',   // scroll se troppi elementi
+                                }}>
+                                    {daysL.map((day, index) => (
+                                        index === daysL.length - 1 ? (
+                                            <Dropdown.Item
+                                                key={index}
+                                                onClick={() => {setLastDay(day)}
+                                                }>
+                                                {day}
+                                            </Dropdown.Item>
+
+                                        ) : (
+                                            <div key={index}>
+                                                <Dropdown.Item onClick={() => {setLastDay(day)}}>{day}</Dropdown.Item>
+                                                <Dropdown.Divider />
+                                            </div>
+                                        )
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent:'center', gap:'30px', paddingTop:20}}>
+                            <SecretDropDown options={allowedMonths} defaultValue={currentMonth} setDefaultValue={setCurrentMonth}/>
+                            <SecretDropDown options={allowedYears} defaultValue={currentYear} setDefaultValue={setCurrentYear}/>
+
+                            <ButtonWithIcon
+                                icon={goIcon}
+                                action={ async () => {
+                                    setPushButton(true)
+                                }}
+                            />
+
+                        </div>
+                    </div>
+
+                    <GeneralTableCounts
+                        counts={generalCounts}
+                        courseCounts={courseCounts}
+                        nCourseTutors={nCourseTutors}
+                        nActiveCourseStudents={nActiveStudCourses}
+                        nActiveCourseTutors={nActiveTutorCourses}
+                    />
+
+
+                    <TutorTableCounts
+                        activeTutors={activeTutors}
+                        firstData={firstDate}
+                        lastData={lastDate}
+                        allowedCounts={today.getDate() !== 1}
+                        setTutorOffset={setTutorOffset}
+                        totPages={totalTutorPages}
+                        currentPage={tutorCurrentPage}
+                        setCurrentPage={setTutorCurrentPage}
+                    />
+
+                    <StudentsTableCounts
+                        activeStudents={activeStudents}
+                        firstData={firstDate}
+                        lastData={lastDate}
+                        allowedCounts={today.getDate() !== 1}
+                        setStudOffset={setStudOffset}
+                        totPages={totalStudPages}
+                        currentPage={studCurrentPage}
+                        setCurrentPage={setStudCurrentPage}
+                    />
+
+                    <CourseStudentsTableCounts
+                        activeStudents={activeCourseStudents}
+                        month={currentMonth}
+                        year={currentYear}
+                        allowedCounts={today.getDate() !== 1}
+                    />
+
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default AdminHome;
 
