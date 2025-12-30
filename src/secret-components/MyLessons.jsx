@@ -27,9 +27,7 @@ function makeCounts(lessons) {
         const hours = lesson.lesson_hours
         const min = lesson.lesson_minutes
 
-        const total_time = hours + min / 60.
-
-        bill += price * total_time
+        bill += price
         if (n_students === 1) {
             private_hours += hours
             private_minutes += min
@@ -94,8 +92,6 @@ function MyLessons({studentsList, lessonTypes, lessonFormats}) {
         fetchLessons();
     }, [firstData, lastData])
      */
-
-
 
     const counts = makeCounts(allLessons)
     return (
