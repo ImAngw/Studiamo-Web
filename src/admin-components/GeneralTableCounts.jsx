@@ -17,7 +17,7 @@ function GeneralTableCounts({counts, courseCounts, nCourseTutors, nActiveCourseS
     useEffect(  () => {
         if (nCourseTutors.total_minutes >= 60) {
             setHours(nCourseTutors.total_hours + Math.floor(nCourseTutors.total_minutes / 60))
-            setMinutes(Math.floor(nCourseTutors.total_minutes / 60))
+            setMinutes(nCourseTutors.total_minutes - 60 * Math.floor(nCourseTutors.total_minutes / 60))
         } else {
             setHours(nCourseTutors.total_hours)
             setMinutes(nCourseTutors.total_minutes)

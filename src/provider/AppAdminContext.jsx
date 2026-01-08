@@ -144,7 +144,7 @@ export function AppAdminProvider({ children }) {
         }
         loadData();
 
-    }, [studCourseOffset, newQuoteAdded])
+    }, [studCourseOffset, newQuoteAdded, dateBefore])
 
 
 

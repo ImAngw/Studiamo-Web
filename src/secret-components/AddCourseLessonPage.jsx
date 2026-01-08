@@ -323,7 +323,7 @@ function AddLessonPage({setIsOpen, setAllLessons, courseList}) {
                                             const stud = await getCourseStudents(c.id_course)
                                             const studWithPres = stud.map(s => ({
                                                 ...s,
-                                                pres: true
+                                                pres: false
                                             }));
 
                                             setStudents(studWithPres);
@@ -339,7 +339,7 @@ function AddLessonPage({setIsOpen, setAllLessons, courseList}) {
                                             const stud = await getCourseStudents(c.id_course)
                                             const studWithPres = stud.map(s => ({
                                                 ...s,
-                                                pres: true
+                                                pres: false
                                             }));
 
                                             setStudents(studWithPres);
