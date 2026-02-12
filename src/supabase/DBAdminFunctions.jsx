@@ -496,6 +496,18 @@ export async function addStudentMonthResume(course_id, studen_id, selected_month
     }
 }
 
+export async function removeStudentMonthResume(course_id, student_id, selected_month, selected_year) {
+    const { error } = await supabase.rpc('remove_student_month_resume', {
+        course_id: course_id,
+        student_id: student_id,
+        selected_month: selected_month,
+        selected_year: selected_year
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
 
 export async function getCourseCounts(selected_month, selected_year) {
     const { data, error } = await supabase.rpc('get_total_course_quote_and_gain', {
@@ -576,5 +588,27 @@ export async function getCourseStudentInfo(selected_month, selected_year, my_off
     }
     return data;
 }
+
+
+export async function tutor_ban(tutor_id) {
+    const { error } = await supabase.rpc('tutor_ban', {
+        tutor_id: tutor_id
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
+export async function tutor_activation(tutor_id) {
+    const { error } = await supabase.rpc('tutor_activation', {
+        tutor_id: tutor_id
+    })
+    if (error) {
+        alert(error.message)
+    }
+}
+
+
 
 

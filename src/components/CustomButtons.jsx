@@ -1,10 +1,6 @@
 import React from 'react';
 import Image from "react-bootstrap/Image";
 
-import {supabase} from "../supabase/supabaseClient";
-import { useNavigate } from 'react-router-dom'
-
-
 
 export function ButtonWithIcon({action, icon}) {
     return (

@@ -8,6 +8,8 @@ import delUserIcon from '../assets/icons/remove-user.png';
 import Dropdown from "react-bootstrap/Dropdown";
 import {addNewLesson} from "../supabase/DBFunctions";
 
+import {FailAlert, SuccessAlert} from "../components/AlertComponents";
+
 
 
 
@@ -105,7 +107,7 @@ function NewStudentSlot({idx, students, setAvailableStudents, availableStudents,
     );
 }
 
-function confirmLesson(strings, year, month, day, hours, minutes, lesson_type_id, format_id, studDict, setIsOpen, lessonTypes, lessonFormats) {
+function confirmLesson(strings, year, month, day, hours, minutes, lesson_type_id, format_id, studDict, setIsOpen, lessonTypes, lessonFormats, setShowAlert, setText) {
     let error = "";
     const mm = String(month).padStart(2, '0');
     const dd = String(day).padStart(2, '0');
@@ -133,7 +135,9 @@ function confirmLesson(strings, year, month, day, hours, minutes, lesson_type_id
 
 
     if (error !== "") {
-        alert(error);
+        //alert(error);
+        setText(error);
+        setShowAlert(true);
         return {state: false, data: null, studList: null};
     } else {
         let typeStr = "";
@@ -160,7 +164,7 @@ function confirmLesson(strings, year, month, day, hours, minutes, lesson_type_id
 }
 
 
-function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllLessons}) {
+function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllLessons, setShowAlert}) {
     const { t } = useTranslation();
     const strings = t("AddLessonPage", { returnObjects: true });
     const monthStrings = t("Months", { returnObjects: true });
@@ -205,13 +209,19 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
 
     const [slots, setSlots] = useState([0]);
     const [studDict, setStudDict] = useState({1: {student_id: null, cash_payment: 0}});
+    const [showFailAlert, setShowFailAlert] = useState(false);
+    const [text, setText] = useState("");
+
+
 
     const addSlot = () => {
         const idx = slots.length;
         if (studDict[idx].student_id !== null) {
             setSlots((prev) => [...prev, prev.length]); // aggiunge un nuovo indice
         } else {
-            alert(strings.alert) // mostra la nuvoletta
+            // alert(strings.alert) // mostra la nuvoletta
+            setShowFailAlert(true);
+            setText(strings.alert)
         }
     };
 
@@ -239,14 +249,23 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
                 left: 0,
                 width: "100%",
                 height: "100%",
+                paddingTop:30,
                 backgroundColor: "rgba(0, 0, 0, 0.5)",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "start",
                 justifyContent: "center",
                 zIndex: 1000,
                 overflowY: "auto",
             }}
         >
+            {showFailAlert &&
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    {/* Sfondo semi-trasparente */}
+                    <div className="absolute inset-0 bg-black/30"></div>
+                    <FailAlert show={showFailAlert} onClose={() => setShowFailAlert(false)} text={text}/>
+                </div>
+            }
+
             <div
                 style={{
                     backgroundColor: "white",
@@ -260,8 +279,8 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
 
                 }}
             >
-                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20}}>
-                    <h1 className="title-font" style={{textAlign: 'center', margin: 0}}> {strings.title}</h1>
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:10}}>
+                    <h1 style={{textAlign: 'center', margin: 0, fontSize:35, color:"green"}}> {strings.title}</h1>
                     <div style={{position: 'absolute', right: '15px', top: '10px',}}>
                         <ButtonWithIcon action={() => setIsOpen(false)} icon={closeIcon} />
                     </div>
@@ -510,10 +529,10 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
                     <ButtonWithIcon
                         icon={addLessonIcon}
                         action={async () => {
-                            const check = confirmLesson(strings, year, month, selectedDay, hours, minutes, lessonTypeId, mod, studDict, setIsOpen, lessonTypes, lessonFormats);
-                            const n_students = check.studList.length < 5 ? check.studList.length : 5;
+                            const check = confirmLesson(strings, year, month, selectedDay, hours, minutes, lessonTypeId, mod, studDict, setIsOpen, lessonTypes, lessonFormats, setShowFailAlert, setText);
 
                             if (check.state) {
+                                const n_students = check.studList.length < 5 ? check.studList.length : 5;
                                 const newInfo = await addNewLesson(
                                     check.data,
                                     hours,
@@ -537,9 +556,9 @@ function AddLessonPage({setIsOpen, lessonTypes, lessonFormats, students, setAllL
                                     student_list: check.studList
                                 }
 
-                                alert(strings.success)
-                                setIsOpen(false)
-
+                                // alert(strings.success);
+                                setIsOpen(false);
+                                setShowAlert(true);
 
                                 setAllLessons(prev => {
                                     return [

@@ -15,6 +15,7 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
 
     return (
         <div>
+            {/*
             <div style={{paddingTop:10, display: 'flex', flexDirection:'row', alignItems:'center', gap:50}}>
                 <h1 className={'title-font'}> {strings.active_students}</h1>
                 <ButtonWithIcon
@@ -34,13 +35,17 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                     }}
                 />
             </div>
-            <div style={{padding:20}}>
+            */}
+
+
+            <div>
                 <div
                     style={{
-                        height: '375px',   // <- altezza fissa
+                        height: '570px',   // <- altezza fissa
                         overflowY: 'auto',    // <- scroll verticale se troppe righe
                         border: '1px solid #ccc', // opzionale, per vedere il bordo
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        backgroundColor: 'white'
                     }}
                 >
                     <table
@@ -49,14 +54,14 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                     >
                         <thead>
                         <tr>
-                            <th className={'title-font'} style={{fontSize: '10px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.bill} €</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Invia</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Download</th>
+                            <th  style={{fontSize: '14px', width:'40px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
+                            <th  style={{fontSize: '14px', width:'115px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
+                            <th  style={{fontSize: '14px', width:'110px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
+                            <th  style={{fontSize: '14px', width:'75px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.bill} €</th>
+                            <th style={{fontSize: '14px', width:'50px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.hours}</th>
+                            <th  style={{fontSize: '14px', width:'50px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.minutes}</th>
+                            <th  style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.send}</th>
+                            <th  style={{fontSize: '14px', width:'80px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>Download</th>
 
                         </tr>
                         </thead>
@@ -66,9 +71,9 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{student.stud_surname}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{student.stud_name}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_cost}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_hours}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_minutes}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.total_cost}</td>
                                 <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                                     {allowedCounts && (
                                         <ButtonWithIcon
@@ -106,7 +111,8 @@ function StudentsTableCounts({activeStudents, firstData, lastData, allowedCounts
                                                 const user = { name: student.stud_name, surname: student.stud_surname, bill: student.total_cost };
                                                 const lessons = await getLessonsForStudents(student.stud_id, false, firstData, lastData);
                                                 const pdfDoc = await generateStudentReport(user, firstData, lastData, lessons);
-                                                pdfDoc.download(`Resoconto ${student.stud_surname} ${student.stud_name} dal ${firstData} al ${lastData}`)
+                                                // pdfDoc.download(`Resoconto ${student.stud_surname} ${student.stud_name} dal ${firstData} al ${lastData}`)
+                                                pdfDoc.save(`Resoconto ${student.stud_surname} ${student.stud_name} dal ${firstData} al ${lastData}`);
                                             }}
                                         />
                                     )}

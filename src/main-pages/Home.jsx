@@ -10,6 +10,13 @@ import {getBucketImages} from "../supabase/DBFunctions";
 
 
 
+import Example from "../components/NewHeader";
+import HomeContent from "../components/HomeContent";
+import NewFooter from "../components/NewFooter";
+import ScrollToTop from "../admin-components/ScrollToTop";
+
+
+
 function Home() {
     const { width, height } = useContext(WindowSizeContext);
     const { t } = useTranslation();
@@ -34,9 +41,13 @@ function Home() {
 
 
     return (
-        <div className={'home-style'} style={{ overflowX: 'hidden' }}>
-            <Header img={img}/>
-            <div style={{paddingRight:15, paddingLeft:15, paddingTop:50}}>
+        <div className={'home-style pt-[80px]'} style={{ overflowX: 'hidden' }}>
+            <ScrollToTop/>
+            <Example/>
+            {/*<Header img={img}/>*/}
+            <HomeContent/>
+
+            {/*<div style={{paddingRight:15, paddingLeft:15, paddingTop:50}}>
                 <h1 className={'title-font'}>{strings.title1}</h1>
                 <p className={'main-font'}>{strings.par1_1}</p>
                 <p className={'main-font'}>{strings.par1_2}</p>
@@ -127,8 +138,11 @@ function Home() {
                 <h1 className={'title-font'} style={{paddingTop:20}}>{strings.title4}</h1>
                 <p className={'main-font'}>{strings.par4_1}</p>
 
-            </div>
-            <CustomFooter/>
+            </div>*/}
+            <NewFooter/>
+
+
+            {/*<CustomFooter/>*/}
         </div>
     );
 }

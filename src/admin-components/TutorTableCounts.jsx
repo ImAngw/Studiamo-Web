@@ -13,6 +13,7 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
 
     return (
         <div>
+            {/*
             <div style={{paddingTop:10, display: 'flex', flexDirection:'row', alignItems:'center', gap:50}}>
                 <h1 className={'title-font'} style={{paddingTop:10}}> {strings.active_tutors}</h1>
                 <ButtonWithIcon
@@ -32,14 +33,16 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                     }}
                 />
             </div>
+            */}
 
-            <div style={{padding:20}}>
+            <div>
                 <div
                     style={{
-                        height: '375px',   // <- altezza fissa
+                        height: '570px',   // <- altezza fissa
                         overflowY: 'auto',    // <- scroll verticale se troppe righe
                         border: '1px solid #ccc', // opzionale, per vedere il bordo
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        backgroundColor: 'white'
                     }}
                 >
                     <table
@@ -48,16 +51,16 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                     >
                         <thead>
                         <tr>
-                            <th className={'title-font'} style={{fontSize: '15px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.level}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.hours}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.minutes}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.course_hours}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.c_minutes}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.gain} €</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Download</th>
+                            <th style={{fontSize: '14px', width:'40px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
+                            <th style={{fontSize: '14px', width:'115px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
+                            <th style={{fontSize: '14px', width:'110px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
+                            <th style={{fontSize: '14px', width:'75px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.gain} €</th>
+                            {/*<th style={{fontSize: '14px', width:'100px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.level}</th>*/}
+                            <th style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.hours}</th>
+                            <th style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.minutes}</th>
+                            <th style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.course_hours}</th>
+                            <th style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.c_minutes}</th>
+                            <th style={{fontSize: '14px', width:'80px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>Download</th>
 
                         </tr>
                         </thead>
@@ -67,12 +70,12 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.tutorn_surname}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.tutor_name}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.tutor_level}</td>
+                                <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_cost}</td>
+                                {/*<td className={'main-font'} style={{fontSize: '15px'}}>{tutor.tutor_level}</td>*/}
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_hours}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_minutes}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_course_hours}</td>
                                 <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_course_minutes}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{tutor.total_cost}</td>
                                 <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                                     {allowedCounts && (
                                         <ButtonWithIcon
@@ -97,7 +100,8 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                                                 })
 
                                                 const pdfDoc = await generateTutorReport(tutor.tutor_name, tutor.tutorn_surname, tutor.total_cost, lessons, courseLessons, studNames, firstData, lastData);
-                                                pdfDoc.download(`Resoconto di ${tutor.tutorn_surname} ${tutor.tutor_name} dal ${firstData} al ${lastData}`)
+                                                //pdfDoc.download(`Resoconto di ${tutor.tutorn_surname} ${tutor.tutor_name} dal ${firstData} al ${lastData}`)
+                                                pdfDoc.save(`Resoconto di ${tutor.tutorn_surname} ${tutor.tutor_name} dal ${firstData} al ${lastData}`)
                                             }}
                                         />
                                     )}
@@ -124,8 +128,8 @@ function TutorTableCounts({activeTutors, firstData, lastData, allowedCounts, set
                 </button>
 
                 <span style={{ margin: '0 10px', fontSize:22 }} className={'main-font'}>
-                        Pagina {currentPage} di {totPages}
-                    </span>
+                    Pagina {currentPage} di {totPages}
+                </span>
 
                 <button
                     disabled={currentPage === totPages}

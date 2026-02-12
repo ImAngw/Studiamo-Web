@@ -13,6 +13,17 @@ import goIcon from "../assets/icons/lets-go.png";
 import {useAdminData, useAdminProfileData} from "../provider/AppAdminContext";
 
 
+import NewAdminHeader from "../admin-components/NewAdminHeader";
+import AdminPeriodSelector from "../admin-components/AdminPeriodSelector";
+import TutorTableContent from "../admin-components/TutorTableContent";
+import StudentTableContent from "../admin-components/StudentTableContent";
+import CourseStudTableContent from "../admin-components/CourseStudTableContent";
+import NewFooter from "../components/NewFooter";
+import ScrollToTop from "../admin-components/ScrollToTop";
+
+
+
+
 function formatDate(year, month, day) {
     const mm = String(month).padStart(2, '0');
     const dd = String(day).padStart(2, '0');
@@ -250,6 +261,7 @@ function AdminHome() {
     const {generalCounts, courseCounts, nCourseTutors, nActiveTutorCourses, nActiveStudCourses, activeCourseStudents} = useAdminData()
 
 
+
     const [fYear, fMonth, fDay] = firstDate?.split("-");
     const [lYear, lMonth, lDay] = lastDate?.split("-");
 
@@ -309,9 +321,13 @@ function AdminHome() {
 
 
     return (
-        <div>
+        <div className="pt-[80px]">
             {profile && (
                 <div>
+                    <ScrollToTop/>
+                    <NewAdminHeader/>
+
+                    {/*
                     <AdminHeader
                         name={profile.tutor_name}
                         surname={profile.tutor_surname}
@@ -406,6 +422,62 @@ function AdminHome() {
                         </div>
                     </div>
 
+                    */}
+
+                    <AdminPeriodSelector
+                        name={profile.tutor_name}
+                        surname={profile.tutor_surname}
+                        firstDay={firstDay}
+                        lastDay={lastDay}
+                        setFirstDay={setFirstDay}
+                        setLastDay={setLastDay}
+                        daysF={daysF}
+                        daysL={daysL}
+                        allowedYears={allowedYears}
+                        allowedMonths={allowedMonths}
+                        currentMonth={currentMonth}
+                        setCurrentMonth={setCurrentMonth}
+                        currentYear={currentYear}
+                        setCurrentYear={setCurrentYear}
+                        setPushButton={setPushButton}
+                        counts={generalCounts}
+                        courseCounts={courseCounts}
+                        nCourseTutors={nCourseTutors}
+                        nActiveCourseStudents={nActiveStudCourses}
+                        nActiveCourseTutors={nActiveTutorCourses}
+                    />
+
+                    <TutorTableContent
+                        activeTutors={activeTutors}
+                        firstData={firstDate}
+                        lastData={lastDate}
+                        allowedCounts={today.getDate() !== 1}
+                        setTutorOffset={setTutorOffset}
+                        totPages={totalTutorPages}
+                        currentPage={tutorCurrentPage}
+                        setCurrentPage={setTutorCurrentPage}
+                    />
+
+                    <StudentTableContent
+                        activeStudents={activeStudents}
+                        firstData={firstDate}
+                        lastData={lastDate}
+                        allowedCounts={today.getDate() !== 1}
+                        setStudOffset={setStudOffset}
+                        totPages={totalStudPages}
+                        currentPage={studCurrentPage}
+                        setCurrentPage={setStudCurrentPage}
+                    />
+
+                    <CourseStudTableContent
+                        activeStudents={activeCourseStudents}
+                        month={currentMonth}
+                        year={currentYear}
+                        allowedCounts={today.getDate() !== 1}
+                    />
+
+                    <NewFooter/>
+                    {/*
                     <GeneralTableCounts
                         counts={generalCounts}
                         courseCounts={courseCounts}
@@ -444,6 +516,7 @@ function AdminHome() {
                         allowedCounts={today.getDate() !== 1}
                     />
 
+                    */}
                 </div>
             )}
         </div>

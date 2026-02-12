@@ -8,16 +8,22 @@ function MyCourses( { courseList }) {
     const strings = t("MyCourses", { returnObjects: true });
 
     return (
-        <div style={{padding:20}}>
+        <div>
+
+            {/*
             <div>
                 <h1 className={'title-font'} style={{fontSize:40}}>{strings.title}</h1>
             </div>
+            */}
+
 
             <div
                 style={{
-                    height: '145px',   // <- altezza fissa
+                    height: '270px',   // <- altezza fissa
+                    maxWidth: '450px',
                     overflowY: 'auto',    // <- scroll verticale se troppe righe
-                    border: '1px solid #ccc' // opzionale, per vedere il bordo
+                    border: '1px solid #ccc', // opzionale, per vedere il bordo
+                    backgroundColor: 'white'
                 }}
             >
                 <table
@@ -27,15 +33,15 @@ function MyCourses( { courseList }) {
                 >
                     <thead>
                     <tr>
-                        <th className={'title-font'} style={{fontSize: '25px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
-                        <th className={'title-font'} style={{fontSize: '25px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.course}</th>
+                        <th style={{fontSize: '16px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
+                        <th style={{fontSize: '16px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.course}</th>
                     </tr>
                     </thead>
                     <tbody>
                     {courseList && (courseList.map((course, index) => (
                         <tr key={course.id_course || index}>
-                            <td className={'main-font'} style={{fontSize: '18px'}}>{index + 1}</td>
-                            <td className={'main-font'} style={{fontSize: '18px'}}>{course.name}</td>
+                            <td className={'main-font'} style={{fontSize: '11px'}}>{index + 1}</td>
+                            <td className={'main-font'} style={{fontSize: '11px'}}>{course.name}</td>
                         </tr>)
                     ))}
                     </tbody>

@@ -205,6 +205,9 @@ export async function addNewLesson(
     student_list,
     already_processed
 ) {
+
+
+
     const { data, error } = await supabase.rpc('new_insert_lesson_with_presences', {
         lesson_date: date,
         lesson_hours: hours,

@@ -9,10 +9,6 @@ import {ButtonWithIcon, ButtonWithText} from "./CustomButtons";
 import {WindowSizeContext} from "../context/Context";
 
 
-import menuIcon from '../assets/icons/dots.png'
-import imAngIcon from '../assets/icons/imagw-logo.png'
-import img from "../assets/logo/logo.jpg";
-
 
 
 
@@ -31,7 +27,7 @@ function CustomOffCanvas() {
 
     return (
         <div style={{display: "flex", flexDirection: 'column', justifyContent: "flex-end"}}>
-            <ButtonWithIcon action={handleShow} icon={menuIcon}/>
+            <ButtonWithIcon action={handleShow} icon={"src/assets/icons/dots.png"}/>
 
             <Offcanvas
                 show={show}
@@ -88,7 +84,7 @@ function CustomOffCanvas() {
                     }}
                 >
                     <p style={{ margin: 0, fontSize:11}}>{strings.powered_by}</p>
-                    <img src={imAngIcon} alt="Image" style={{ height: '40px', width: '40px' }} />
+                    <img src={"https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/imagw-logo.png"} alt="Image" style={{ height: '40px', width: '40px' }} />
                 </div>
             </Offcanvas>
         </div>

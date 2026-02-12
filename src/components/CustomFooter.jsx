@@ -1,13 +1,6 @@
 import React, {useState}  from 'react';
 import Image from "react-bootstrap/Image";
 import { useTranslation } from 'react-i18next';
-import posIcon from '../assets/icons/placeholder.png'
-import mailIcon from '../assets/icons/email.png'
-import phoneIcon from '../assets/icons/telephone.png'
-import instaIcon from '../assets/icons/instagram.png'
-import imAngIcon from '../assets/icons/imagw-logo.png'
-import whatsappIcon from '../assets/icons/whatsapp.png'
-import img from '../assets/logo/logo.jpg';
 import Modal from 'react-bootstrap/Modal';
 
 
@@ -41,22 +34,34 @@ function CustomFooter() {
                     </h2>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5x', position: 'relative'}}>
-                        <Image style={{height: '25px', width: '25px'}} src={posIcon}/>
+                        <Image
+                            style={{height: '25px', width: '25px'}}
+                            src={"src/assets/icons/placeholder.png"}
+                        />
                         <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.first_address}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
-                        <Image style={{height: '25px', width: '25px'}} src={posIcon}/>
+                        <Image
+                            style={{height: '25px', width: '25px'}}
+                            src={"src/assets/icons/placeholder.png"}
+                        />
                         <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.second_address}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
-                        <Image style={{height: '25px', width: '25px'}} src={mailIcon}/>
+                        <Image
+                            style={{height: '25px', width: '25px'}}
+                            src={"src/assets/icons/email.png"}
+                        />
                         <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.email}</p>
                     </div>
 
                     <div style={{display: 'flex', flexDirection: 'row', paddingLeft: '15px', paddingBottom: '5px', position: 'relative'}}>
-                        <Image style={{height: '20px', width: '25px'}} src={phoneIcon}/>
+                        <Image
+                            style={{height: '20px', width: '25px'}}
+                            src={"src/assets/icons/telephone.png"}
+                        />
                         <p className={'main-font'} style={{paddingLeft: '20px', fontSize: '17px'}}>{strings.phone}</p>
                     </div>
 
@@ -70,7 +75,7 @@ function CustomFooter() {
                            rel="noopener noreferrer">
                             <img
                                 style={{height: '26px', width: '35px', paddingRight: '10px', cursor: 'pointer'}}
-                                src={instaIcon}
+                                src={"src/assets/icons/instagram.png"}
                                 alt="Instagram"
                             />
                         </a>
@@ -79,7 +84,7 @@ function CustomFooter() {
                            rel="noopener noreferrer">
                             <img
                                 style={{height: '28px', width: '40px', paddingRight: '10px', cursor: 'pointer'}}
-                                src={whatsappIcon}
+                                src={"src/assets/icons/whatsapp.png"}
                                 alt="Instagram"
                             />
                         </a>
@@ -159,7 +164,9 @@ function CustomFooter() {
                     }}
                 >
                     <p style={{ margin: 0, fontSize:11}}>{strings.powered_by}</p>
-                    <img src={imAngIcon} alt="Image" style={{ height: '40px', width: '40px' }} />
+                    <img
+                        src={"https://kuhaudayosnvdhmgiaxg.supabase.co/storage/v1/object/public/StudiAmo-web-images/logo/imagw-logo.png"}
+                        alt="Image" style={{ height: '40px', width: '40px' }} />
                 </div>
             </footer>
         </div>

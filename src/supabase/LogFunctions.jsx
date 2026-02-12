@@ -14,16 +14,28 @@ export async function logout(navigate) {
 export async function maintainLogin(user, navigate) {
     const { data: userInfo, error: userError } = await supabase
         .from('users')
-        .select('role')
+        .select('role, force_logout_after')
         .eq('uid', user.id)
         .single()
+
+    // controlla se il token è stato emesso prima del logout forzato
+    const session = await supabase.auth.getSession()
+
+    const issuedAt = new Date(session.data.session.user.last_sign_in_at)
+    const forceLogoutAfter = new Date(userInfo.force_logout_after)
+
+
+    if (issuedAt < forceLogoutAfter) {
+        await supabase.auth.signOut()
+        navigate("/tutor_page")
+        return
+    }
 
     if (userInfo.role === 4) {
         navigate('/admin_home', { state: { user } })
     } else {
         navigate('/tutor_dashboard', { state: { user } })
     }
-
 }
 
 
@@ -36,11 +48,10 @@ export async function login({ username, password }, navigate, setError, setLoadi
         password: password.trim()
     })
 
-    setLoading(false)
-
     if (error) {
+        setLoading(false)
         setError(error.message)
-        alert(error.message)
+        // alert(error.message)
         return null
     }
 
@@ -49,16 +60,28 @@ export async function login({ username, password }, navigate, setError, setLoadi
 
     const { data: userInfo, error: userError } = await supabase
         .from('users')
-        .select('role')
+        .select('role, is_banned')
         .eq('uid', user.id)
         .single()
 
 
     if (userError) {
+        setLoading(false)
         setError(userError.message)
-        alert(userError.message)
+        //alert(userError.message)
         return null
     }
+
+    // ✅ CONTROLLO BAN
+    if (userInfo.is_banned) {
+        console.log("BANNED")
+        await supabase.auth.signOut()
+        setLoading(false)
+        setError("Your account has been suspended.")
+        return null
+    }
+
+    setLoading(false)
 
     if (userInfo.role === 4) {
         navigate('/admin_home', { state: { user } })
@@ -68,8 +91,4 @@ export async function login({ username, password }, navigate, setError, setLoadi
 
     window.scrollTo(0, 0)
     return user
-
-
-
-
 }

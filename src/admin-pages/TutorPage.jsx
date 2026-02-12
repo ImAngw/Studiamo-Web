@@ -8,11 +8,17 @@ import TutorInfoPage from "../admin-components/TutorInfoPage";
 import searchIcon from "../assets/icons/search.png";
 import {getTutorBySurname} from "../supabase/DBAdminFunctions";
 
+import NewAdminHeader from "../admin-components/NewAdminHeader";
+import TutorPageContent from "../admin-components/TutorPageContent";
+import ScrollToTop from "../admin-components/ScrollToTop";
+
 
 
 
 
 function AdminTutorPage() {
+
+    /*
 
     const {allTutors, tutorTotalPages, currentTutorPage, setCurrentTutorPage, tutorOffset, setTutorOffset} = useAdminStudentsData()
     const { t } = useTranslation();
@@ -59,11 +65,17 @@ function AdminTutorPage() {
         }
     }, [searchedStr, allTutors]);
 
+     */
+
 
 
 
     return (
-        <div>
+        <div className="pt-[80px]">
+            <ScrollToTop/>
+            <NewAdminHeader/>
+            <TutorPageContent/>
+            {/*
             <AdminHeader
                 name={"Tutors"}
                 surname={""}
@@ -190,6 +202,7 @@ function AdminTutorPage() {
                     </div>
                 </div>
             </div>
+            */}
         </div>
     );
 }

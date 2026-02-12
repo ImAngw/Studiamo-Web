@@ -12,22 +12,45 @@ import {useAdminData} from "../provider/AppAdminContext";
 function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts}) {
     const { t } = useTranslation();
     const strings = t("StudentTableCounts", { returnObjects: true });
+    const monthStrings = t("Months", { returnObjects: true });
+    const monthMap = {
+        1: monthStrings.january,
+        2: monthStrings.february,
+        3: monthStrings.march,
+        4: monthStrings.april,
+        5: monthStrings.may,
+        6: monthStrings.june,
+        7: monthStrings.july,
+        8: monthStrings.august,
+        9: monthStrings.september,
+        10: monthStrings.october,
+        11: monthStrings.november,
+        12: monthStrings.december
+    }
+
+
+
     // const [currentPage, setCurrentPage] = useState(currPage);
 
     const {setCourseStudOffset, totalStudCoursePages, studCourseCurrentPage, setStudCourseCurrentPage} = useAdminData()
 
     return (
         <div>
+            {/*
             <div style={{paddingTop:10, display: 'flex', flexDirection:'row', alignItems:'center', gap:50}}>
                 <h1 className={'title-font'}> {strings.course_active_students}</h1>
             </div>
-            <div style={{padding:20}}>
+            */}
+
+
+            <div>
                 <div
                     style={{
-                        height: '375px',   // <- altezza fissa
+                        height: '570px',   // <- altezza fissa
                         overflowY: 'auto',    // <- scroll verticale se troppe righe
                         border: '1px solid #ccc', // opzionale, per vedere il bordo
-                        borderRadius: '8px'
+                        borderRadius: '8px',
+                        backgroundColor: 'white'
                     }}
                 >
                     <table
@@ -36,12 +59,12 @@ function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts})
                     >
                         <thead>
                         <tr>
-                            <th className={'title-font'} style={{fontSize: '10px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'110px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.bill} €</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'70px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Invia</th>
-                            <th className={'title-font'} style={{fontSize: '20px', width:'80px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>Download</th>
+                            <th style={{fontSize: '14px', width:'40px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
+                            <th  style={{fontSize: '14px', width:'115px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
+                            <th  style={{fontSize: '14px', width:'110px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
+                            <th  style={{fontSize: '14px', width:'75px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.bill} €</th>
+                            <th  style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.send}</th>
+                            <th  style={{fontSize: '14px', width:'80px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>Download</th>
 
                         </tr>
                         </thead>
@@ -60,13 +83,13 @@ function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts})
                                                 const win = window.open('', '_blank'); // apri subito la finestra
                                                 try {
                                                     const user = { name: student.s_name, surname: student.s_surname, bill: student.course_price, c_name: student.course_name};
-                                                    const pdfDoc = await generateStudentCourseReport(user, month, year);
-                                                    const pdfURL = await uploadPDF(pdfDoc, `Resoconto ${student.s_surname} ${student.s_name} del ${month}_${year}`);
+                                                    const pdfDoc = await generateStudentCourseReport(user, monthMap[month], year);
+                                                    const pdfURL = await uploadPDF(pdfDoc, `Resoconto ${student.s_surname} ${student.s_name} del mese di ${monthMap[month]} ${year}`);
 
                                                     if (!pdfURL) throw new Error('Upload fallito');
 
                                                     const phone = student.s_phone;
-                                                    const message = `Studiamo APS\n\nEcco il resoconto dei corsi di ${student.s_surname} ${student.s_name} del ${month}/${year}.\n\nPuoi scaricare il tuo resoconto qui:\n\n ${pdfURL}`;
+                                                    const message = `Studiamo APS\n\nEcco il resoconto dei corsi di ${student.s_surname} ${student.s_name} del mese di ${monthMap[month]} ${year}.\n\nPuoi scaricare il tuo resoconto qui:\n\n ${pdfURL}`;
                                                     const encodedMessage = encodeURIComponent(message);
                                                     win.location.href = `https://wa.me/${phone}?text=${encodedMessage}`; // aggiorna la finestra aperta
                                                 } catch (err) {
@@ -86,8 +109,9 @@ function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts})
                                             icon={downloadIcon}
                                             action={async () => {
                                                 const user = { name: student.s_name, surname: student.s_surname, bill: student.course_price, c_name: student.course_name};
-                                                const pdfDoc = await generateStudentCourseReport(user, month, year);
-                                                pdfDoc.download(`Resoconto ${student.s_name} ${student.s_surname} del ${month}_${year}`)
+                                                const pdfDoc = await generateStudentCourseReport(user, monthMap[month], year);
+                                                // pdfDoc.download(`Resoconto ${student.s_name} ${student.s_surname} del mese di ${monthMap[month]} ${year}`)
+                                                pdfDoc.save(`Resoconto ${student.s_name} ${student.s_surname} del mese di ${monthMap[month]} ${year}`);
                                             }}
                                         />
                                     )}

@@ -1,8 +1,12 @@
 import React, { useContext } from 'react';
 import {WindowSizeContext} from "../context/Context";
 import Header from "../components/Header";
+import Example from "../components/NewHeader";
 import Login from "../components/Login";
 import {useTranslation} from "react-i18next";
+import TutorAreaContent from "../components/TutorAreaContent";
+import NewFooter from "../components/NewFooter";
+import ScrollToTop from "../admin-components/ScrollToTop";
 
 
 
@@ -21,16 +25,21 @@ function TutorPage() {
     }
 
     return (
-        <div className={'tutor-style'} style={{overflowX: 'hidden'}}>
+        <div className={'tutor-style pt-[80px]'} style={{overflowX: 'hidden'}}>
 
-            <Header img={img}/>
+            {/*<Header img={img}/>*/}
+            <ScrollToTop/>
+            <Example/>
+            <TutorAreaContent/>
+            {/*
             <div style={{paddingRight:15, paddingLeft:15, paddingTop:50}}>
                 <h1 className={'title-font'}>{strings.title}</h1>
                 <p className={'main-font'}>{strings.par1}</p>
                 <p className={'main-font'}>{strings.par2}</p>
             </div>
             <Login />
-
+            */}
+            <NewFooter/>
         </div>
 
     );

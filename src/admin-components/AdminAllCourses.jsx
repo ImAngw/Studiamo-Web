@@ -145,6 +145,7 @@ function AdminAllCourses() {
 
 
 
+
     return (
         <div>
             <div style={{paddingTop:20, display: 'flex', flexDirection:'column', alignItems:'center', gap:10}}>

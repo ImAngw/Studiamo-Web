@@ -8,14 +8,15 @@ import {fetchTranslations} from "../supabase/DBFunctions";
 
 export async function initI18n() {
     // rileva lingua del browser (o fallback)
-    const lang = navigator.language.split("-")[0] || "it";
+    const rawLang = navigator.language.split("-")[0];
+    const lang = ["it", "en"].includes(rawLang) ? rawLang : "it";
 
-    // recupera il JSON dal DB
-    const translations = await fetchTranslations(lang);
-
-    if (!translations) {
-        console.error("Impossibile caricare le traduzioni dal DB");
-        return;
+    let translations;
+    try {
+        translations = await fetchTranslations(lang);
+    } catch (e) {
+        console.error("Errore fetch traduzioni", e);
+        translations = {};
     }
 
     await i18n
@@ -26,10 +27,6 @@ export async function initI18n() {
             supportedLngs: ["it", "en"],
             resources: {
                 [lang]: { translation: translations },
-            },
-            detection: {
-                order: ["navigator", "htmlTag"],
-                caches: [],
             },
             interpolation: {
                 escapeValue: false,

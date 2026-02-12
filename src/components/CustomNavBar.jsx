@@ -1,5 +1,4 @@
 import React, {useContext} from 'react';
-import img from '../assets/logo/logo.jpg';
 import CustomOffCanvas  from './CustomOffCanvas';
 import {WindowSizeContext} from "../context/Context";
 

@@ -1,8 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { useTranslation } from 'react-i18next';
 import {ButtonWithIcon} from "../components/CustomButtons";
-import closeIcon from '../assets/icons/close.png';
-import addLessonIcon from '../assets/icons/add-lesson.png';
 import Dropdown from "react-bootstrap/Dropdown";
 import {getCourseStudents, addNewCourseLesson} from "../supabase/DBFunctions";
 
@@ -37,10 +35,10 @@ function AddStudentsTable({students, setStudents, strings}) {
                 >
                     <thead>
                     <tr>
-                        <th className={'title-font'} style={{fontSize: '20px', width:'20px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}> </th>
-                        <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.surname}</th>
-                        <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.name}</th>
-                        <th className={'title-font'} style={{fontSize: '15px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1}}>{strings.in_class}</th>
+                        <th className={'title-font'} style={{fontSize: '20px', width:'20px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
+                        <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
+                        <th className={'title-font'} style={{fontSize: '20px', width:'100px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
+                        <th className={'title-font'} style={{fontSize: '15px', width:'40px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.in_class}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -132,10 +130,6 @@ function confirmLesson(strings, year, month, day, courseId, hours, minutes, stud
 }
 
 
-function makeCounts() {
-
-}
-
 
 
 function AddLessonPage({setIsOpen, setAllLessons, courseList}) {
@@ -205,10 +199,10 @@ function AddLessonPage({setIsOpen, setAllLessons, courseList}) {
                     maxWidth: "400px",
                 }}
             >
-                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:20}}>
-                    <h1 className="title-font" style={{textAlign: 'center', margin: 0}}> {strings.title}</h1>
+                <div style={{display: 'flex', flexDirection:'row', justifyContent:'center', paddingBottom:60}}>
+                    <h1  style={{textAlign: 'center', margin: 0, fontSize:35, color:"green"}}> {strings.title}</h1>
                     <div style={{position: 'absolute', right: '15px', top: '10px',}}>
-                        <ButtonWithIcon action={() => setIsOpen(false)} icon={closeIcon} />
+                        <ButtonWithIcon action={() => setIsOpen(false)} icon={"src/assets/icons/close.png"} />
                     </div>
                 </div>
 
@@ -369,7 +363,7 @@ function AddLessonPage({setIsOpen, setAllLessons, courseList}) {
 
                 <div style={{display: 'flex', justifyContent:'center'}}>
                     <ButtonWithIcon
-                        icon={addLessonIcon}
+                        icon={"src/assets/icons/add-lesson.png"}
                         action={async () => {
                             const check = confirmLesson(strings, year, month, selectedDay, course.id,  hours, minutes, students);
                             if (check.state) {
