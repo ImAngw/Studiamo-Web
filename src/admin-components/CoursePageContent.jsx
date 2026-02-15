@@ -2,10 +2,9 @@ import {useTranslation} from "react-i18next";
 import React, {useEffect, useState} from "react";
 import {useAdminData} from "../provider/AppAdminContext";
 import {ButtonWithIcon} from "../components/CustomButtons";
-import infoIcon from "../assets/icons/info.png";
 import arrowIcon from "../assets/icons/arrow.png";
 import {addStudentMonthResume, removeStudentMonthResume, getStudentOfTheCourses, getTutorOfTheCourses} from "../supabase/DBAdminFunctions";
-import addButtonIcon from "../assets/icons/add-button.png";
+import folderIcon from "../assets/icons/empty-folder.png";
 
 
 function AllCourses({strings, courses, setIsOpen, setCourseId, setCourseName}) {
@@ -14,32 +13,32 @@ function AllCourses({strings, courses, setIsOpen, setCourseId, setCourseName}) {
             <div style={{paddingTop:20, display: 'flex', flexDirection:'column', alignItems:'center', gap:10}}>
                 <div
                     style={{
-                        height: '365px',   // <- altezza fissa
+                        height: '385px',   // <- altezza fissa
                         width: '100%',
                         overflowY: 'auto',    // <- scroll verticale se troppe righe
                         border: '1px solid #ccc', // opzionale, per vedere il bordo
                         borderRadius: '8px'
                     }}
                 >
-                    <table
-                        className="table table-striped table-bordered table-hover"
-                        style={{ tableLayout: 'fixed'}}
-                    >
-                        <thead>
+                    <table className="w-full text-sm table-fixed">
+                        <thead className="sticky top-0 w-full bg-[#E9E1CD] z-10 text-xs uppercase tracking-wide text-gray-700">
                         <tr>
-                            <th style={{fontSize: '14px', width:'40px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}> </th>
-                            <th style={{fontSize: '14px', width:'200px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}>{strings.name}</th>
-                            <th style={{fontSize: '14px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}></th>
+                            <th className="w-8 px-2 py-3 text-left"> </th>
+                            <th className="w-56 px-2 py-3 text-sm table-fixed">{strings.course}</th>
+                            <th className="w-16 px-2 py-3 text-sm table-fixed"></th>
 
                         </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                         {courses && (courses.map((course, index) => (
-                            <tr key={index}>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{course.name}</td>
-                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                            <tr
+                                key={index}
+                                className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}
+                            >
+                                <td className="px-2 py-3" style={{fontSize:7, color:"green"}}>{index + 1}</td>
+                                <td className="px-2 py-3" >{course.name}</td>
+                                <td className="px-2 py-3" >
                                     <ButtonWithIcon
                                         action={() => {
                                             setCourseId(course.id_course);
@@ -86,8 +85,8 @@ function CourseInfo({course_id, courseName, strings}) {
 
 
     return (
-        <div style={{paddingTop:30, paddingBottom:70, display: 'flex', flexDirection:'column', alignItems:'center', gap:10}}>
-            <h1 style={{fontSize: 30}}> {courseName ?? strings.select_course}</h1>
+        <div style={{paddingTop:30, paddingBottom:40, display: 'flex', flexDirection:'column', gap:10}}>
+            <h1 style={{fontSize: 24}}> {courseName ?? strings.select_course}</h1>
             <div style={{
                 height: '600px',   // <- altezza fissa
                 width: '100%',
@@ -96,62 +95,63 @@ function CourseInfo({course_id, courseName, strings}) {
                 borderRadius: '8px',
                 backgroundColor: 'white'
             }}>
-                <table
-                    className="table table-striped table-bordered table-hover"
-                    style={{ tableLayout: 'fixed'}}
-                >
-                    <thead>
+                <table className="w-full text-sm table-fixed">
+                    <thead className="sticky top-0 w-full bg-[#E9E1CD] z-10 text-xs uppercase tracking-wide text-gray-700">
                     <tr>
-                        <th  style={{fontSize: '14px', width:'15px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}> </th>
+                        <th className="w-8 px-2 py-3 text-left"> </th>
                         {/*<th  style={{fontSize: '14px', width:'5px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"gold"}}>{strings.role}</th>*/}
-                        <th  style={{fontSize: '14px', width:'150px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}>{strings.name}</th>
-                        <th  style={{fontSize: '14px', width:'45px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}>{strings.price}</th>
-                        <th  style={{fontSize: '14px', width:'50px', position: 'sticky', top: 0, background: '#fff', zIndex: 1, backgroundColor:"#E9E1CD"}}> </th>
-
-
+                        <th  className="w-56 px-2 py-3 text-sm table-fixed">{strings.name}</th>
+                        <th  className="w-32 px-2 py-3 text-sm table-fixed"></th>
+                        <th  className="w-24 px-2 py-3 text-sm table-fixed"> </th>
                     </tr>
                     </thead>
 
 
 
-                    <tbody>
+                    <tbody className="divide-y divide-gray-100">
 
-                    <tr key={1000} style={{height:30}} >
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}>{" "}</td>
+                    <tr key={1000}>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}>{" "}</td>
                         {/*<td className={'main-font'} style={{fontSize: '15px'}}></td>*/}
-                        <td className={'main-font'} style={{fontSize: '17px', backgroundColor:"#9BCECF"}}><b>{strings.tutor}</b></td>
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}></td>
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}><b>{strings.tutor}</b></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}></td>
 
                     </tr>
                     {tutors && (tutors.map((tutor, index) => (
-                        <tr key={index + 1}>
-                            <td style={{fontSize: '10px'}}>{index + 1}</td>
+                        <tr
+                            key={index + 1}
+                            className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}
+                        >
+                            <td className="px-2 py-3" style={{fontSize:7, color:"green"}}>{index + 1}</td>
                             {/*<td className={'main-font'} style={{fontSize: '8px', color:'orange'}}>{strings.tutor}</td>*/}
-                            <td className={'main-font'} style={{fontSize: '14px'}}>{tutor.tutor_surname + " " + tutor.tutor_name}</td>
-                            <td className={'main-font'} style={{fontSize: '10px'}}>{String(tutor.tutor_price) + " " + strings.tutor_price}</td>
-                            <td className={'main-font'} style={{fontSize: '14px'}}></td>
+                            <td className="px-2 py-3">{tutor.tutor_surname + " " + tutor.tutor_name}</td>
+                            <td className="px-2 py-3">{String(tutor.tutor_price) + " " + strings.tutor_price}</td>
+                            <td className="px-2 py-3"></td>
 
                         </tr>)
                     ))}
 
-                    <tr key={tutors.length} style={{height:30}} >
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}>{" "}</td>
+                    <tr key={tutors.length}>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}>{" "}</td>
                         {/*<td className={'main-font'} style={{fontSize: '15px'}}></td>*/}
-                        <td className={'main-font'} style={{fontSize: '17px', backgroundColor:"#9BCECF"}}><b>{strings.student}</b></td>
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}></td>
-                        <td className={'main-font'} style={{fontSize: '15px', backgroundColor:"#9BCECF"}}></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}><b>{strings.student}</b></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}></td>
+                        <td className="px-2 py-1" style={{backgroundColor:"#9BCECF"}}></td>
 
                     </tr>
 
                     {students && (students.map((student, index) => (
-                        <tr key={index + 1 + tutors.length}>
-                            <td style={{fontSize: '10px'}}>{index + 1}</td>
+                        <tr
+                            key={index + 1 + tutors.length}
+                            className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}
+                        >
+                            <td className="px-2 py-3" style={{fontSize:7, color:"green"}}>{index + 1}</td>
                             {/*<td className={'main-font'} style={{fontSize: '8px', color:'blue'}}>{strings.student}</td>*/}
-                            <td className={'main-font'} style={{fontSize: '14px'}}>{student.stud_surname + " " + student.stud_name}</td>
-                            <td className={'main-font'} style={{fontSize: '10px'}}>{String(student.month_price) + " " + strings.stud_price}</td>
+                            <td className="px-2 py-3">{student.stud_surname + " " + student.stud_name}</td>
+                            <td className="px-2 py-3">{String(student.month_price) + " " + strings.stud_price}</td>
 
-                            <td style={{ textAlign: 'center', verticalAlign: 'middle'}}>
+                            <td className="px-2 py-3">
 
                                 <label className="relative inline-block w-14 h-8 cursor-pointer">
                                     <input
@@ -339,13 +339,28 @@ export default function CoursePageContent() {
                     <div
                         className="-mt-12 lg:p-14 lg:-ml-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden"
                     >
-                        {isOpen && (
+                        {course_id ? (
                             <CourseInfo
                                 course_id={course_id}
                                 courseName={courseName}
                                 strings={strings}
                             />
-                        )}
+                        ): (
+                            <div className="lg:h-[718px] h-[400px] lg:pt-[150px]">
+                                <div style={{
+                                    height: '350px',   // <- altezza fissa
+                                    overflowY: 'auto',    // <- scroll verticale se troppe righe
+                                    backgroundImage:`url(${folderIcon})`,
+                                    backgroundSize: '240px',        // copre tutto il div
+                                    backgroundPosition: 'center',   // centrata
+                                    backgroundRepeat: 'no-repeat',
+                                    justifyContent: 'center',
+                                }}>
+                                </div>
+
+                            </div>
+                            )
+                        }
 
                     </div>
                 </div>

@@ -81,7 +81,7 @@ function NewStudentSlot({idx, students, setAvailableStudents, availableStudents,
                                         key={s.student_id}
                                         value={s.student_id}
                                     >
-                                        {s.student_name + " " + s.student_surname}
+                                        {s.student_surname + " " + s.student_name}
                                     </option>
                                 ))
                             }

@@ -6,6 +6,8 @@ import downloadIcon from '../assets/icons/download.png'
 import {generateStudentCourseReport} from "../pdf-functions/PdfGenerator";
 import {uploadPDF} from "../supabase/DBAdminFunctions";
 import {useAdminData} from "../provider/AppAdminContext";
+import folderIcon from '../assets/icons/empty-folder.png'
+
 
 
 
@@ -46,36 +48,43 @@ function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts})
             <div>
                 <div
                     style={{
-                        height: '570px',   // <- altezza fissa
+                        height: '590px',   // <- altezza fissa
                         overflowY: 'auto',    // <- scroll verticale se troppe righe
                         border: '1px solid #ccc', // opzionale, per vedere il bordo
                         borderRadius: '8px',
-                        backgroundColor: 'white'
+                        backgroundColor: 'white',
+
+                        backgroundImage: activeStudents.length === 0
+                            ? `url(${folderIcon})`
+                            : 'none',
+                        backgroundSize: '240px',        // copre tutto il div
+                        backgroundPosition: 'center',   // centrata
+                        backgroundRepeat: 'no-repeat'
                     }}
                 >
-                    <table
-                        className="table table-striped table-bordered table-hover"
-                        style={{ tableLayout: 'fixed'}}
-                    >
-                        <thead>
+                    <table className="w-full text-sm table-fixed">
+                        <thead className="sticky top-0 w-full bg-[#E9E1CD] z-10 text-xs uppercase tracking-wide text-gray-700">
                         <tr>
-                            <th style={{fontSize: '14px', width:'40px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
-                            <th  style={{fontSize: '14px', width:'115px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
-                            <th  style={{fontSize: '14px', width:'110px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
-                            <th  style={{fontSize: '14px', width:'75px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.bill} €</th>
-                            <th  style={{fontSize: '14px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.send}</th>
-                            <th  style={{fontSize: '14px', width:'80px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>Download</th>
+                            <th className="w-8 px-2 py-3 text-left"> </th>
+                            {/* <th className="w-56 px-2 py-3 text-sm table-fixed">{strings.surname}</th>*/}
+                            <th className="w-56 px-2 py-3 text-sm table-fixed">{strings.name}</th>
+                            <th className="w-32 px-2 py-3 text-sm table-fixed">{strings.bill}</th>
+                            <th className="w-16 px-2 py-3 text-sm table-fixed"></th>
+                            <th className="w-16 px-2 py-3 text-sm table-fixed"></th>
 
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="divide-y divide-gray-100">
                         {activeStudents && (activeStudents.map((student, index) => (
-                            <tr key={index}>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{index + 1}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.s_surname}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.s_name}</td>
-                                <td className={'main-font'} style={{fontSize: '15px'}}>{student.course_price}</td>
-                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                            <tr
+                                key={index}
+                                className={`transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}
+                            >
+                                <td className="px-2 py-3" style={{fontSize:7, color:"green"}}>{index + 1}</td>
+                                {/*<td className={'main-font'} style={{fontSize: '15px'}}>{student.s_name}</td>*/}
+                                <td className="px-2 py-3" >{student.s_surname} {student.s_name}</td>
+                                <td className="px-2 py-3" >{student.course_price} €</td>
+                                <td className="px-2 py-3" >
                                     {allowedCounts && (
                                         <ButtonWithIcon
                                             icon={wIcon}
@@ -103,7 +112,7 @@ function CourseStudentsTableCounts({activeStudents, month, year, allowedCounts})
 
                                 </td>
 
-                                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                                <td className="px-2 py-3" >
                                     {allowedCounts && (
                                         <ButtonWithIcon
                                             icon={downloadIcon}

@@ -10,7 +10,7 @@ function StudentCourseDropDown({ studentsList }) {
     const strings = t("StudentsDropDown", { returnObjects: true });
 
     return (
-        <Dropdown style={{width: '100px', height: '30px'}}>
+        <Dropdown style={{width: '100%', height: '30px'}}>
             <Dropdown.Toggle
                 style={{
                     backgroundColor: 'transparent',  // nessun colore di sfondo
@@ -23,19 +23,19 @@ function StudentCourseDropDown({ studentsList }) {
                     justifyContent: 'flex-start' //
                 }}
             >
-                <span className={'main-font'} style={{fontSize:12}}>{strings.in_class}</span>
+                {/*<span className={'main-font'} style={{fontSize:12}}>{strings.in_class}</span>*/}
             </Dropdown.Toggle>
             <Dropdown.Menu>
                 {studentsList.map((student, index) => (
                     index === studentsList.length - 1 ? (
                         <Dropdown.Item key={index}>
-                            {student.name + " " + student.surname}
+                            {student.surname + " " + student.name}
                         </Dropdown.Item>
 
                     ) : (
                         <div key={index}>
                             <Dropdown.Item>
-                                {student.name + " " + student.surname}
+                                {student.surname + " " + student.name}
                             </Dropdown.Item>
                             <Dropdown.Divider />
                         </div>

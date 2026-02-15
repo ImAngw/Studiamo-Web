@@ -71,7 +71,7 @@ function LoginPage() {
                             Username
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             className="form-control main-font"
                             id="username"
                             value={username}

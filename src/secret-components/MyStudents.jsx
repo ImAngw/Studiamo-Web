@@ -1,12 +1,12 @@
 import React from "react";
 import { useTranslation } from 'react-i18next';
+import ResponsiveCarousel from "./ResponsiveCarousel";
 
 
 
 function MyStudents( { studentsList}) {
     const { t } = useTranslation();
     const strings = t("MyStudents", { returnObjects: true });
-
 
     return (
         <div>
@@ -16,6 +16,9 @@ function MyStudents( { studentsList}) {
             </div>
             */}
 
+            <ResponsiveCarousel items={studentsList ?? []} initialActive={0} />
+
+            {/*
             <div
                 style={{
                     height: '270px',   // <- altezza fissa
@@ -46,6 +49,10 @@ function MyStudents( { studentsList}) {
                     </tbody>
                 </table>
             </div>
+            */}
+
+
+
         </div>
     );
 }

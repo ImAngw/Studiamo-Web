@@ -10,6 +10,7 @@ import {useCourseLessonsData} from "../provider/AppTutorContext";
 import AddCourseLessonPage from "./AddCourseLessonPage";
 import CourseCountsWafer from "./CourseCountsWafer";
 import {ChevronDownIcon} from "@heroicons/react/16/solid";
+import folderIcon from "../assets/icons/empty-folder.png";
 
 
 
@@ -70,8 +71,10 @@ function MyCourseLessons({ courseList, setShowAlert }) {
     const [isOpen, setIsOpen] = useState(false);
     const {currentMonth, setCurrentMonth, currentYear, setCurrentYear, allLessons, setAllLessons} = useCourseLessonsData()
 
-
+    /*
     const counts = makeCounts(allLessons)
+
+     */
 
 
     return (
@@ -153,6 +156,7 @@ function MyCourseLessons({ courseList, setShowAlert }) {
 
             </div>
 
+            {/*
             <div style={{paddingTop:15}}>
                 <div
                     style={{
@@ -213,13 +217,81 @@ function MyCourseLessons({ courseList, setShowAlert }) {
                         </tbody>
                     </table>
                 </div>
-
-                {/*
-                <div style={{paddingTop:20}}>
-                    <CourseCountsWafer counts={counts}/>
-                </div>
-                */}
             </div>
+            */}
+
+            <div className="pt-4">
+                <div
+                    className="h-[345px] overflow-y-auto border border-gray-200 rounded-xl bg-white shadow-sm"
+                    style={{
+                        backgroundImage: allLessons.length === 0
+                            ? `url(${folderIcon})`
+                            : 'none',
+                        backgroundSize: '240px',        // copre tutto il div
+                        backgroundPosition: 'center',   // centrata
+                        backgroundRepeat: 'no-repeat'
+                    }}
+                >
+                    <table className="w-full text-sm table-fixed">
+                        <thead className="sticky top-0 bg-[#E9E1CD] z-10 text-xs uppercase tracking-wide text-gray-700">
+                        <tr>
+                            <th className="w-10 px-2 py-3 text-left"></th>
+                            <th className="w-16 px-2 py-3 text-left">{strings.data}</th>
+                            {/*<th className="w-16 px-2 py-3 text-left">{strings.minutes}</th>*/}
+                            <th className="w-20 px-2 py-3 text-left">{strings.hours}</th>
+                            <th className="w-28 px-2 py-3 text-left">{strings.course}</th>
+                            <th className="w-16 px-2 py-3 text-left">{strings.students}</th>
+                            <th className="w-16 px-2 py-3"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody className="divide-y divide-gray-100">
+                        {allLessons?.map((lesson, index) => (
+                            <tr
+                                key={lesson.l_id}
+                                className={`transition-colors hover:bg-gray-50 ${
+                                    index % 2 === 0 ? "bg-white" : "bg-gray-100"
+                                }`}
+                            >
+                                <td className="px-2 py-3 text-gray-700" style={{fontSize:7, color:"green"}}>{index + 1}</td>
+                                <td className="px-2 py-3">{lesson.day.split("-")[2]} </td>
+                                <td className="px-2 py-3">{lesson.n_hours}h : {lesson.n_minutes}m</td>
+                                <td className="px-2 py-3">
+                                    {courseList.find(c => c.id_course === lesson.course_id)?.name || ""}
+                                </td>
+
+
+                                {/*<td className="px-2 py-3">{lesson.n_minutes}</td>*/}
+
+
+                                <td className="px-2 py-3">
+                                    <StudentCourseDropDown studentsList={lesson.student_list} />
+                                </td>
+
+                                <td className="px-2 py-3 text-center">
+                                    {!lesson.is_processed && (
+                                        <div className="flex justify-center">
+                                            <ButtonWithIcon
+                                                icon={delIcon}
+                                                action={() => {
+                                                    deleteCourseLesson(lesson.l_id);
+                                                    setAllLessons(prev =>
+                                                        prev.filter(l => l.l_id !== lesson.l_id)
+                                                    );
+                                                    setShowAlert(true);
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
         </div>
     );
 }

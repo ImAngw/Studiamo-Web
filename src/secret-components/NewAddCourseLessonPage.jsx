@@ -24,81 +24,74 @@ function AddStudentsTable({students, setStudents, strings}) {
 
     return (
         <div style={{paddingTop:20, paddingBottom:20}}>
-            <h5 className="mt-1 text-sm/6 text-gray-600"><b>{strings.students}</b></h5>
-            <div
-                style={{
-                    height: '245px',   // <- altezza fissa
-                    overflowY: 'auto',    // <- scroll verticale se troppe righe
-                    border: '1px solid #ccc' // opzionale, per vedere il bordo
-                }}
-            >
-                <table
-                    className="table table-striped table-bordered table-hover"
-                    style={{ tableLayout: 'fixed'}}
-                >
-                    <thead>
-                    <tr>
+            {/*<h5 className="mt-1 text-sm/6 text-gray-600"><b>{strings.students}</b></h5>*/}
 
-                        {/*
-                        <th style={{fontSize: '11px', width:'20px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}> </th>
-                        <th style={{fontSize: '11px', width:'95px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.surname}</th>
-                        */}
-                        <th style={{fontSize: '12px', width:'200px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.name}</th>
-                        <th style={{fontSize: '12px', width:'70px', position: 'sticky', top: 0, background: '#E9E1CD', zIndex: 1}}>{strings.in_class}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {students && (students.map((stud, index) => (
-                        <tr key={index}>
 
-                            {/*
-                            <td className={'main-font'} style={{fontSize: '10px'}}>{index + 1}</td>
-                            <td className={'main-font'} style={{fontSize: '10px'}}></td>
-                            */}
-                            <td className={'main-font'} style={{fontSize: '12px'}}>{stud.student_surname} {stud.student_name}</td>
-                            <td className={'main-font'} style={{fontSize: '11px', justifyContent:'center', alignItems:'center', display:'flex'}}>
-                                <label className="relative inline-block w-14 h-8 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="peer sr-only"
-                                        checked={!!stud.pres}
-                                        onChange={(e) =>
-                                            togglePres(stud.student_id, e.target.checked)
-                                        }
-                                    />
+            <div className="pt-1">
+                <div className="h-[300px] overflow-y-auto border border-gray-200 rounded-xl bg-white shadow-sm">
+                    <table className="w-full text-sm table-fixed">
+                        <thead className="sticky top-0 bg-[#E9E1CD] z-10 text-xs uppercase tracking-wide text-gray-700">
+                        <tr>
+                            <th className="w-52 px-2 py-3 text-left">{strings.student}</th>
+                            <th className="w-20 px-2 py-3 text-center">{strings.in_class}</th>
+                        </tr>
+                        </thead>
 
-                                    {/* background */}
-                                    <div className="w-full h-full bg-gray-300 rounded-full transition-colors peer-checked:bg-green-500" />
-                                    {/* pallino */}
-                                    <div className="absolute top-1 left-1 w-6 h-6 bg-white rounded-full flex items-center justify-center transition-all duration-200 peer-checked:left-7">
+                        <tbody className="divide-y divide-gray-100">
+                        {students?.map((stud, index) => (
+                            <tr
+                                key={stud.student_id}
+                                className={`transition-colors hover:bg-gray-50 ${
+                                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                }`}
+                            >
+                                <td className="px-2 py-3 text-[12px]">
+                                    {stud.student_surname} {stud.student_name}
+                                </td>
 
-                                        {/* X icon */}
-                                        <svg
-                                            className={`w-4 h-4 text-gray-600 ${stud.pres ? "hidden" : "block"}`}
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/>
-                                        </svg>
+                                <td className="px-2 py-3 text-center">
+                                    <label className="relative inline-block w-14 h-8 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            className="peer sr-only"
+                                            checked={!!stud.pres}
+                                            onChange={(e) =>
+                                                togglePres(stud.student_id, e.target.checked)
+                                            }
+                                        />
 
-                                        {/* Check icon */}
-                                        <svg
-                                            className={`w-4 h-4 text-green-600 ${stud.pres ? "block" : "hidden"}`}
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
-                                        </svg>
+                                        {/* background */}
+                                        <div className="w-full h-full bg-gray-300 rounded-full transition-colors peer-checked:bg-green-500" />
 
-                                    </div>
-                                </label>
-                            </td>
-                        </tr>)
-                    ))}
-                    </tbody>
-                </table>
+                                        {/* pallino */}
+                                        <div className="absolute top-1 left-1 w-6 h-6 bg-white rounded-full flex items-center justify-center transition-all duration-200 peer-checked:left-7">
+                                            {/* X icon */}
+                                            <svg
+                                                className={`w-4 h-4 text-gray-600 ${stud.pres ? "hidden" : "block"}`}
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+
+                                            {/* Check icon */}
+                                            <svg
+                                                className={`w-4 h-4 text-green-600 ${stud.pres ? "block" : "hidden"}`}
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </div>
+                                    </label>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 

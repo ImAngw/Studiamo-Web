@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 function getStudentName(student_dict, studentsList) {
     for (const s of studentsList ?? []) {
         if (s.student_id === student_dict.student_id) {
-            return s.student_name + " " + s.student_surname;
+            return s.student_surname + " " + s.student_name;
         }
     }
 }
@@ -18,7 +18,7 @@ function StudentsDropDown({students, studentsList}) {
     const strings = t("StudentsDropDown", { returnObjects: true });
 
     return (
-        <Dropdown style={{width: '100px', height: '30px'}}>
+        <Dropdown style={{width: '100%', height: '30px'}}>
             <Dropdown.Toggle
                 style={{
                     backgroundColor: 'transparent',  // nessun colore di sfondo
@@ -31,7 +31,7 @@ function StudentsDropDown({students, studentsList}) {
                     justifyContent: 'flex-start' //
                 }}
             >
-                <span className={'main-font'} style={{fontSize:12}}>{strings.in_class}</span>
+                {/*<span className={'main-font'} style={{fontSize:12}}>{strings.in_class}</span>*/}
             </Dropdown.Toggle>
             <Dropdown.Menu>
                 {students && studentsList?.length > 0 && students.map((stud_idx, index) => (
